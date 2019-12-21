@@ -1,0 +1,33 @@
+
+{% load static %}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{ name }}</title>
+</head>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+       <!-- Bootstrap core CSS -->
+  
+    <script src="{% static 'm/dist/sweetalert.min.js' %}"></script> <link rel="stylesheet" type="text/css" href="{% static 'm/dist/sweetalert.css'%}">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static "/css/signin.css" %}" rel="stylesheet">
+        <body style="background-image:url('{% static 'images/bg.jpg' %}'); background-position: center;background-size: cover;" >
+
+
+        {% block Content %}
+        {% endblock %}
+</body>
+    
+    <script src="{% static 'js/jquery.min.js'  %}"></script> 
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/docs.min.js' %}"></script>
+</html>

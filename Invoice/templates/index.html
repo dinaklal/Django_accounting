@@ -1,0 +1,49 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block Content %}
+
+
+<script>
+function w() {
+swal({   title: "{{ name }}",   text: "PASSWORD is wrong!",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Try again!",   closeOnConfirm: false },
+ function(){
+    window.location.href = '/';});
+
+ 
+};
+</script>
+    <div class="container">
+
+      <form class="form-signin" role="form" action="login " method="post">
+      {% csrf_token %}
+          <b>  <h2 class="form-signin-heading"><center>{{ name }}</h2><hr class="alert-danger" /></b>
+        <br />
+        <div class="form-group">
+            <span class="label label-primary">User Name:</span>
+        <select class="form-control" class="form-control" id="sel1" name="username" required>
+       
+       {% for u in Users  %}
+                
+        <option value="{{ u.username }}">{{ u.username }}
+           </option  >
+        {% endfor %}
+     
+           
+          </select>
+            <div> <br>
+        <input type="password" class="form-control" placeholder="Password" name="passwd" required>
+       
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div> <!-- /container -->
+    <div>
+    {% for message in messages %}
+    
+    <body onLoad="w()">';
+
+    {% endfor %}
+
+
+    {% endblock %}

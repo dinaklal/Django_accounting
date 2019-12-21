@@ -1,0 +1,178 @@
+
+  <html>   
+
+    <script src="/home/lals/Desktop/Invoice_Application_Django/Invoice/assets/js/jquery.min.js"></script> 
+    <script src="/home/lals/Desktop/Invoice_Application_Django/Invoice/assets/js/bootstrap.min.js"></script>
+    <script src="/home/lals/Desktop/Invoice_Application_Django/Invoice/assets/js/docs.min.js"></script>
+	<link href="/home/lals/Desktop/Invoice_Application_Django/Invoice/assets/css/bootstrap.min.css" rel="stylesheet">
+<div class="row col-md-12 container" id="invoice" style="background-color:white">
+
+<title>Mughal Invoice</title>
+<style >
+.invoice-title h2, .invoice-title h3 {
+    display: inline-block;
+}
+
+.table > tbody > tr > .no-line {
+    border-top: none;
+}
+
+.table > thead > tr > .no-line {
+    border-bottom: none;
+}
+
+.table > tbody > tr > .thick-line {
+    border-top: 2px solid;
+}
+</style>
+
+
+
+    <div class="row">
+        <div class="col-xs-12">
+					 <td class="title">
+                                <img src="/home/lals/Desktop/Invoice_Application_Django/Invoice/assets/images/logo.png" style="max-width:50px;">
+                            </td>
+							<br>
+
+							<h2>Mughal Ltd, Qatar - 9565665</h2><br>
+    		<div class="invoice-title">
+    			<B><h3 class="pull-right"  align="right">Invoice #{{invoice.id}}</h3></B>
+    		</div>
+    		<hr>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+    				<strong>Billed To:</strong><br>
+    					{{invoice.customer	}}<br>
+    					{{invoice.addess}}<br>
+    				
+    					{{invoice.contact}}
+    				</address>
+    			</div>
+    			
+    		</div>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+    				
+    				</address>
+    			</div>
+    			<div class="col-xs-6 text-right">
+    				<address>
+    					<strong>Invoice Date:</strong><br>
+    					{{ invoice.date }}<br><br>
+    				</address>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+
+    			<div class="panel-heading">
+    				<h3 class="panel-title"><strong>summary</strong></h3>
+    			</div>
+    			<div class="panel-body">
+    				<div class="table-responsive">
+    					<table class="table table-condensed">
+    						<thead>
+                                <tr>
+        							<td class="text-center"><strong>SINO</strong></td>
+        							<td class="text-center"><strong>Site/Unit rate</strong></td>
+        							<td class="text-right"><strong>Units*loads</strong></td>
+        							<td class="text-right"><strong>Total Units</strong></td>
+                      <td class="text-right"><strong>Total price</strong></td>
+                                </tr>
+    						</thead>
+    						<tbody>
+    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
+               
+                  {% for sale in sales %}
+                  
+    							<tr>
+                    <td class="text-center">{{ sale.sino }}</td>
+    								<td class="text-center">{{sale.name}}/{{sale.uprice}}</td>
+    								
+    								<td class="text-right">{{sale.uload}} * {{sale.loads}}</td>
+    								<td class="text-right">{{ sale.units }}</td>
+                    	<td class="text-right">{{ sale.price }}</td>
+                    
+    							</tr>
+                 
+                  {% endfor %}
+
+				  <tr>	<td>
+				  <hr></td>
+				  <td>
+				  <hr></td>
+				  <td>
+				  <hr></td>
+				  <td>
+				  <hr></td>
+				  <td>
+				  <hr></td>
+				  </tr>
+                  
+				 
+                  <tr style="padding-top:'50%'">
+				  
+    								<td class="thick-line"></td>
+    								<td class="thick-line"></td>
+                    	<td class="thick-line"></td>
+
+					
+    								<td class="thick-line text-center"><strong>Subtotal</strong></td>
+    								<td class="thick-line text-right">{{to}}</td>
+    							</tr>
+                  <tr>
+    								<td class="no-line"></td>
+    								<td class="no-line"></td>
+                    <td class="no-line"></td>
+    								<td class="no-line text-center"><strong>Total Units</strong></td>
+    								<td class="no-line text-right">{{ invoice.total_units }}</td>
+    							</tr>
+    							<tr>
+    								<td class="no-line"></td>
+    								<td class="no-line"></td>
+                    <td class="no-line"></td>
+    								<td class="no-line text-center"><strong>Discount</strong></td>
+    								<td class="no-line text-right">{{ invoice.discount }}</td>
+    							</tr>
+                  
+    							<tr>
+    								<td class="no-line"></td>
+    								<td class="no-line"></td>
+                    <td class="no-line"></td>
+    								<td class="no-line text-center"><strong>Total</strong></td>
+    								<td class="no-line text-right">{{ invoice.total_price }}</td>
+    							</tr>
+
+								<tr>	
+								<td>
+				  </td>
+				  <td>
+				  </td>
+				  <td>
+				</td>
+				  <td>
+				  <hr></td>
+				  <td>
+				  <hr></td>
+				  </tr>
+    						</tbody>
+    					</table>
+
+						Receiver Signature: .............................................
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+
+
+</div>
+<html>
