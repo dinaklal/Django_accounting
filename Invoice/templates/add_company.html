@@ -4,15 +4,15 @@
     
 <script>
 function w() {
-swal({   title: "Mughal Invoice",   text: "Duplicate Site Name",   type: "warning",  
- showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different site name",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different Company name",   closeOnConfirm: false },
  function(){
-    window.location.href = 'add_site';});
+    window.location.href = 'add_company';});
 
  
 };
 function s() {
-swal({   title: "Mughal Invoice",   text: "Site Added",   type: "success",  
+swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",  
  showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "View Sites",   closeOnConfirm: false },
  function(){
     window.location.href = 'view_site';});
@@ -57,7 +57,8 @@ swal({   title: "Mughal Invoice",   text: "Site Added",   type: "success",
         <div  class="col-sm-3 col-md-2 sidebar" >
           <ul class="nav nav-sidebar">
               <li ><a href="home">Invoice Home</a></li>
-             <li class= "active"><a href="add_site">Add Site</a></li>
+             <li class= "active"><a href="add_company">Add Compnay</a></li>
+             <li><a href="add_site">Add Site</a></li>
                         <li ><a href="view_site">Vew Site</a></li>
                  <li ><a href="get_invoice">View/Edit Invoice</a></li>
             <li><a href="report">Report</a></li>
@@ -67,47 +68,18 @@ swal({   title: "Mughal Invoice",   text: "Site Added",   type: "success",
        
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
-            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Add New Site </b></center>
+            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Add New Company </b></center>
           
           
-          <form class="form-signin" role="form" action="add_site" method="post">
+          <form class="form-signin" role="form" action="add_company" method="post">
    			 {% csrf_token %}
-
-
-        <input type="text" class="form-control" placeholder="Site name" name="name" required><br>
-
-      <textarea rows="3" cols="50" class="form-control" placeholder="Description" name="desc" required></textarea><br>
-       
-        <div class="form-group">
-            <span class="label label-primary">Associated Company:</span>
-        <select class="form-control" class="form-control" id="sel1" name="company" required>
-       
-       {% for u in companies  %}
-                
-        <option value="{{ u.id }}">{{ u.name }}
-           </option  >
-        {% endfor %}
-     
-           
-          </select>
-            <div> <br>
-               <div class="form-group">
-            <span class="label label-primary">Sweet Water:</span>
-              <input type="number" class="form-control" placeholder="Gallon price in associated company" name="s1" required><br>
-              </div>
-               <div class="form-group">
-            <span class="label label-primary">Sweet Water:</span>
-              <input type="number" class="form-control" placeholder="Trip price in associated company" name="s2" required><br>
-              </div>
-
-               <div class="form-group">
-            <span class="label label-primary">Sewage Water Removal:</span>
-              <input type="number" class="form-control" placeholder="Trip price in associated company" name="s3" required><br>
-                </div>
+        <input type="text" class="form-control" placeholder="Company name" name="name" required><br>
+       <input type="text" class="form-control" placeholder="Contact" name="contact" required><br>
 
        
+      <textarea rows="3" cols="50" class="form-control" placeholder="Address" name="address" required></textarea><br>
        
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Site</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Company</button>
       </form>
         
 

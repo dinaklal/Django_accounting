@@ -33,12 +33,14 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','192.168.1.5']
 INSTALLED_APPS = [
     'login.apps.LoginConfig',
     'home.apps.HomeConfig',
+    'company.apps.CompanyConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     
 ]
 

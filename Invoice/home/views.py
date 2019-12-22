@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
+from company.models import Company,Rate
 from login.models import Sites
 from home.models import Invoice,Sales
 from django.contrib import messages
@@ -19,19 +20,25 @@ def logout(request):
 def add_site(request):
     if request.method == 'POST':
         name = request.POST['name']
-
-        price = request.POST['price']
+        company = request.POST['company']
+        s1 = request.POST['s1']
+        s2 = request.POST['s2']
+        s3 = request.POST['s3']
         desc = request.POST['desc']
         if Sites.objects.filter(name=name).exists():
             messages.error(request,'duplicate')
             return redirect('add_site')
         else:
-            ob=Sites(name=name,Unit_price=price,Description=desc)
+            ob=Sites(name=name,Description=desc)
+            ob.save()
+            site_id = ob.id
+            ob=Rate(company_id=company,site_id=site_id,service1 = s1,service2 = s2,service3 = s3)
             ob.save()
             messages.info(request,'done')
             return redirect('add_site')
     else:
-        return render(request,'add_site.html')
+        companies =  Company.objects.all()
+        return render(request,'add_site.html',{'companies':companies})
 def view_site(request):
     sites= Sites.objects.all()
     return render(request,'view_site.html',{'sites':sites})
