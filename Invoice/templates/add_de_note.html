@@ -1,0 +1,187 @@
+{% extends 'base.html'%}
+
+{% block Content %}
+    
+<script>
+
+function w() {
+swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different Company name",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_company';});
+
+ 
+};
+function s() {
+swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",  
+ showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "View Sites",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_site';});
+
+ 
+};
+
+
+</script>
+  
+
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color: darkblue">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <a class="navbar-brand" href="#" style="color:white;">Mughal Invoice</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a  href="/" style="color:white;">Hi,{{ user.first_name }} {{ user.last_name }}</a></li>
+           
+            <li><a href="logout" style="color:white;">Logout</a></li>
+            
+           
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+
+   
+
+
+
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <div  class="col-sm-3 col-md-2 sidebar" >
+          <ul class="nav nav-sidebar">
+              <li ><a href="home">Invoice Home</a></li>
+             <li ><a href="add_company">Add Compnay</a></li>
+             <li><a href="add_site">Add Site</a></li>
+             <li class= "active"><a href="add_de_note">Add Delivery Note</a></li>
+                        <li ><a href="view_site">Vew Site</a></li>
+                 <li ><a href="get_invoice">View/Edit Invoice</a></li>
+            <li><a href="report">Report</a></li>
+            
+		
+          </ul>
+       
+        </div>
+        <div class="col-sm-7 col-sm-offset-3 col-md-9 col-md-offset-2 main" >
+            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Add Delivery Note </b></center>
+          
+          
+
+          <form class="" role="form" action="add_de_note" method="post">
+   			 {% csrf_token %}
+<div class ="row">
+<div class="col-sm-3">
+      <input type="number" class="form-control" placeholder="Deliver Note ID" name="del_id" required><br>
+     </div>
+   
+
+   
+     <div class="col-sm-6 pull-right">   
+     
+     <input type="text" class="form-control" placeholder="Vehicle Number" name="veh_no" required><br>
+         </div>
+       </div>       
+
+           <div class ="row">
+     <div class="col-sm-4">  
+
+<div class="form-group">
+            <span class="label label-primary">Select Company:</span>
+        <select class="form-control" class="form-control" id="sel1" name="company" required>
+       
+       {% for u in company  %}
+                
+        <option value="{{ u.id }}">{{ u.name }}
+           </option  >
+        {% endfor %}
+     
+           
+          </select>
+            </div> 
+
+            </div>
+    
+     <div class="col-sm-4">  
+<div class="form-group">
+            <span class="label label-primary">Select Site:</span>
+        <select class="form-control" class="form-control" id="site"  name="site" required>
+       
+       {% for u in sites  %}
+                
+        <option value="{{ u.id }}">{{ u.name }}
+           </option  >
+        {% endfor %}
+     
+           
+          </select>
+            </div> 
+
+            </div>
+
+          
+     <div class="col-sm-4">  
+
+             <div class="form-group">
+            <span class="label label-primary">Select Service:</span>
+        <select class="form-control" class="form-control"   name="service" required>
+       
+          
+        <option value="s1"> Sweet Water Supply
+           </option  >
+          <option value="s2"> Sewage Water Removal 
+           </option  >
+          </select>
+            </div> 
+
+            </div>
+             </div> <!--- row ends -->
+
+  <div class ="row">
+     <div class="col-sm-8">  
+               <div class="form-group">
+            <span class="label label-primary">Enter Units:</span>
+              <input type="number" class="form-control" placeholder="Enter  1 in case of trip" name="units" required><br>
+              </div>
+ </div>
+    <div class="col-sm-4">  
+                <div class="form-group">
+            <span class="label label-primary">Date:</span>
+              <input type="date" class="form-control" value ="{{ today }}" name="units" required><br>
+              </div>
+             
+            </div>
+ </div> <!--- row ends -->
+
+
+ <button class="btn btn-lg btn-success btn-block" type="submit">Add </button>
+      </form>
+        
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+   
+     {% if message.tags == "error" %} 
+     <body onload=w()>
+
+     {% endif %}
+       {% if message.tags == "info" %} 
+     <body onload=s()>
+     
+     {% endif %}
+      
+    </li>
+{% endfor %}
+{% endblock %}

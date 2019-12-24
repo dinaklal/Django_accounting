@@ -13,3 +13,12 @@ class Rate(models.Model):
     service1 = models.CharField(max_length=100)
     service2 = models.CharField(max_length=100)
     service3 = models.CharField(max_length=100)
+class DelNote(models.Model):
+    id = models.IntegerField
+    del_note_id = models.IntegerField(default=1)
+    company_id = models.IntegerField(default=1)
+    site_id = models.IntegerField(default=1)
+    service = models.CharField(max_length=100)
+    date = models.DateField()
+    units = models.CharField(max_length=300)
+    driver = models.CharField(max_length=300)

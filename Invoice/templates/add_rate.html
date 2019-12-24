@@ -1,0 +1,189 @@
+{% extends 'base.html'%}
+
+{% block Content %}
+    
+<script>
+
+var sites=[];
+var rate=[];
+var company=[];
+
+
+{% for s in sites %}
+
+var site={};
+site['name']="{{s.name}}"
+site['id']={{s.id}}
+
+//sites.site=site;
+sites.push(site);
+{% endfor %}
+
+{% for s in company %}
+
+var comp={};
+comp['name']="{{s.name}}"
+comp['id']={{s.id}}
+
+company.push(comp);
+{% endfor %}
+
+{% for s in rate %}
+
+var ra={};
+ra['company_id']="{{s.company_id}}"
+ra['site_id']={{s.site_id}}
+ra['s1']={{s.service1}}
+ra['s2']={{s.service2}}
+ra['s3']={{s.service3}}
+//sites.site=site;
+rate.push(ra);
+{% endfor %}
+
+function w() {
+swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different Company name",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_company';});
+
+ 
+};
+function s() {
+swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",  
+ showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "View Sites",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_site';});
+
+ 
+};
+
+function myFunction(e){
+   var e = document.getElementById("site");
+   var sel2=  e.options[e.selectedIndex].value;
+   e = document.getElementById("sel1");
+   var sel1 = e.options[e.selectedIndex].value;
+   console.log(sel1)
+   console.log(sel2)
+   //document.getElementById("s1").value = e.target.value
+};
+</script>
+  
+
+ <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color: darkblue">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <a class="navbar-brand" href="#" style="color:white;">Mughal Invoice</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a  href="/" style="color:white;">Hi,{{ user.first_name }} {{ user.last_name }}</a></li>
+           
+            <li><a href="logout" style="color:white;">Logout</a></li>
+            
+           
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+
+   
+
+
+
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <div  class="col-sm-3 col-md-2 sidebar" >
+          <ul class="nav nav-sidebar">
+              <li ><a href="home">Invoice Home</a></li>
+             <li ><a href="add_company">Add Compnay</a></li>
+             <li><a href="add_site">Add Site</a></li>
+             <li class= "active"><a href="add_de_note">Add Delivery Note</a></li>
+                        <li ><a href="view_site">Vew Site</a></li>
+                 <li ><a href="get_invoice">View/Edit Invoice</a></li>
+            <li><a href="report">Report</a></li>
+            
+		
+          </ul>
+       
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Add Delivery Note </b></center>
+          
+          
+          <form class="form-signin" role="form" action="add_de_note" method="post">
+   			 {% csrf_token %}
+
+<div class="form-group">
+            <span class="label label-primary">Select Company:</span>
+        <select class="form-control" class="form-control" onchange="myFunction(event)" id="sel1" name="company" required>
+       
+       {% for u in company  %}
+                
+        <option value="{{ u.id }}">{{ u.name }}
+           </option  >
+        {% endfor %}
+     
+           
+          </select>
+            <div> <br>
+            
+<div class="form-group">
+            <span class="label label-primary">Select Site:</span>
+        <select class="form-control" class="form-control" id="site" onchange="myFunction(event)" name="site" required>
+       
+       {% for u in sites  %}
+                
+        <option value="{{ u.id }}">{{ u.name }}
+           </option  >
+        {% endfor %}
+     
+           
+          </select>
+            <div> <br>
+             <br>
+               <div class="form-group">
+            <span class="label label-primary">Sweet Water:</span>
+              <input type="number" class="form-control" placeholder="Gallon price in associated company" id="s1" name="s1" required><br>
+              </div>
+               <div class="form-group">
+            <span class="label label-primary">Sweet Water:</span>
+              <input type="number" class="form-control" placeholder="Trip price in associated company" id="s2" name="s2" required><br>
+              </div>
+
+               <div class="form-group">
+            <span class="label label-primary">Sewage Water Removal:</span>
+              <input type="number" class="form-control" placeholder="Trip price in associated company" id="s3" name="s3" required><br>
+                </div>
+
+        
+      </form>
+        
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% for message in messages %}
+   
+     {% if message.tags == "error" %} 
+     <body onload=w()>
+
+     {% endif %}
+       {% if message.tags == "info" %} 
+     <body onload=s()>
+     
+     {% endif %}
+      
+    </li>
+{% endfor %}
+{% endblock %}
