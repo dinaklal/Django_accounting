@@ -63,31 +63,29 @@
               <thead >
                 <tr>
                  <th> SINO</th>
+                  <th>Delivery Note ID </th>
                   <th>Date </th>
-                  <th>Delivery Note </th>
-                   <th>Company Name</th>
                   <th>Site Name</th>
+                  <th>Vehicle No:</th>
                    <th>Service</th>
                   <th>Units</th>
                   <th>Unit Price </th>
                  
-                  <th class="col-md-5">Description</th>
+                  <th >Invoice ID</th>
 
                   {% for del_note in del_notes%}
                   <tr>
-                  <td>{{del_note.del_id}}</td><td>{{ del_note.units }}</td><td>{{ del_note.date}}</td>
+                  <td>{{ del_note.sino }} </td>
+                  <td>{{del_note.del_id}}</td>
+                  <td>{{ del_note.date}}</td>
+                   <td>{{ del_note.site_name }}</td>
+                   <td>{{ del_note.veh_no }}</td>
+                  <td>{{ del_note.service }}</td>
+                  <td>{{ del_note.units }}</td>
+                   <td>{{ del_note.u_price }}</td>
+                    <td>{{ del_note.invoiced }}</td>
                   
-                   <td>
-
                   
-                  
-              
-                  <a href= 'admin/login/sites/3/change' > <button class="btn btn-warning " action="submit" >
-                  Edit </button></a>
-                  
-                  </form>
-
-                  </td>
                   
                   </tr>
                   {% endfor %}

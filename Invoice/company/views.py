@@ -106,7 +106,10 @@ def trip_sheet(request):
     company = Company.objects.get(id=company)
     notes = []
     element = {}
+    i=1
     for del_note in del_notes:
+        element['sino']= i
+        i = i+1
         element['del_id'] = del_note.del_note_id
         element['site_id'] = del_note.site_id
         site = Sites.objects.get(id=del_note.site_id)
@@ -116,16 +119,23 @@ def trip_sheet(request):
         if del_note.units == '1' and del_note.service == 's1':
             element['u_price'] = rate.service2
             element['trip'] = 1
+            element['service'] = "Sweet Water "
             element['units'] = del_note.units + ' Trip'
         elif del_note.service == 's1':
             element['u_price'] = rate.service1
             element['trip'] = 0
+            element['service'] = "Sweet Water "
             element['units'] = del_note.units + ' Gallon'
         else:
             element['u_price'] = rate.service3
             element['trip'] = 0
-            element['units'] = del_note.units + ' Gallon'
-        element['invoiced'] = del_note.invoiced
+            element['service'] = "Sewage Water Removal"
+            element['units'] = del_note.units + ' Trip'
+        element['veh_no'] = del_note.veh_no
+        if del_note.invoiced == False:
+            element['invoiced'] = '----'
+        else:
+            element['invoiced'] =  del_note.invoiced
         element['date'] = del_note.date
         notes.append(element)
         element = {}

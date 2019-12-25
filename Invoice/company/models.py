@@ -23,3 +23,4 @@ class DelNote(models.Model):
     units = models.CharField(max_length=300)
     veh_no = models.CharField(max_length=300)
     invoiced = models.BooleanField(default = False) 
+    inv_id = models.IntegerField(default=0)
