@@ -21,4 +21,5 @@ class DelNote(models.Model):
     service = models.CharField(max_length=100)
     date = models.DateField()
     units = models.CharField(max_length=300)
-    driver = models.CharField(max_length=300)
+    veh_no = models.CharField(max_length=300)
+    invoiced = models.BooleanField(default = False) 

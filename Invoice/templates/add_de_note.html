@@ -5,8 +5,8 @@
 <script>
 
 function w() {
-swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "warning",  
- showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different Company name",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Company - Site Association Not provided",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Add rate for the mentioned site",   closeOnConfirm: false },
  function(){
     window.location.href = 'add_company';});
 
@@ -155,7 +155,7 @@ swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",
     <div class="col-sm-4">  
                 <div class="form-group">
             <span class="label label-primary">Date:</span>
-              <input type="date" class="form-control" value ="{{ today }}" name="units" required><br>
+              <input type="date" class="form-control" value ="{{ today }}" name="date" required><br>
               </div>
              
             </div>

@@ -23,6 +23,7 @@ def report(request):
         post_data.pop('csrfmiddlewaretoken',None)
         month_start = post_data['from_date'][0]
         today = post_data['to_date'][0]
+        print(post_data)
         invoice = Invoice.objects.filter(date__range=(month_start, today))
     no_of_rows = invoice.count()
     total_price = invoice.aggregate(Sum('total_price'))['total_price__sum']

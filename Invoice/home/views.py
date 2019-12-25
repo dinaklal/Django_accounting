@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
-from company.models import Company,Rate
+from company.models import Company,Rate,DelNote
 from login.models import Sites
 from home.models import Invoice,Sales
 from django.contrib import messages
@@ -9,11 +9,22 @@ from home.utils import render_to_pdf #created in step 4
 from django.views.generic import View
 from django.http import HttpResponse
 # Create your views here.
+from django.db.models import Max
 
 
 def home(request):
-    sites= Sites.objects.all()
-    return render(request,'home.html',{'sites':sites})
+    company = Company.objects.all()
+    del_notes = DelNote.objects.filter(invoiced = False)
+    un_del  = del_notes.count()
+    del_date  = del_notes.aggregate(Max('date'))['date__max']
+    
+    sites = Sites.objects.all()
+    rates = Rate.objects.all()
+    today = datetime.today()
+    month_start = today.replace(day=1)
+    today = today.strftime("%Y-%m-%d")
+    month_start = month_start.strftime("%Y-%m-%d")
+    return render(request,'home.html',{'sites':sites,'company':company,'rates':rates,'today':today,'month_start':month_start,'un_del':un_del,'del_date':del_date})
 def logout(request):
     auth.logout(request)
     return redirect('/')
@@ -124,7 +135,7 @@ def get_invoice(request):
     invoice = Invoice.objects.all().order_by('-date')[:5]
     today=datetime.today()
     today = today.strftime("%Y-%m-%d")
-    print(today)
+    #print(today)
     return render(request,'view_inv.html',{'invoice':invoice,'date':today})
 def edit_inv_date(request):   
     post_data = dict(request.POST.lists())
