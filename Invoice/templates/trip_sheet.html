@@ -48,34 +48,38 @@
        
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
-            <center>  <b> <h1  style="color:green;font-weight: 10000; text-shadow: 2px 2px green;"></h1></b></center>
-          
-            <div class="row" >
-                <div class="col-md-3" >
-             <a href="home" > <button type="button" class="btn btn-lg btn-success">Home</button></a>
-            </div>
-            </div>
-                <br>
-            
+    
+           <div class="well">
+  
+        <b> Trip Sheet From  {{ company.from_date }} to {{ company.to_date}}
+       <br>
+       <h3> Company Name: {{ company.name }} </h3>
+        
+        Address : {{ company.address }}
+        <br>
+        Contact : {{ company.contact }}
+        <br>
+</b>
+</div>
            
             <div class='table-responsive'  >
             <table class='table table-responsive table-bordered' style='background-color:white;'>
               <thead >
                 <tr>
                  <th> SINO</th>
-                  <th>Delivery Note ID </th>
+                  <th>Delivery NoteID</th>
                   <th>Date </th>
                   <th>Site Name</th>
                   <th>Vehicle No:</th>
                    <th>Service</th>
                   <th>Units</th>
                   <th>Unit Price </th>
-                 
-                  <th >Invoice ID</th>
+                   <th>Total Price </th>
+              
 
                   {% for del_note in del_notes%}
                   <tr>
-                  <td>{{ del_note.sino }} </td>
+                  <td>{{ forloop.counter  }} </td>
                   <td>{{del_note.del_id}}</td>
                   <td>{{ del_note.date}}</td>
                    <td>{{ del_note.site_name }}</td>
@@ -83,18 +87,82 @@
                   <td>{{ del_note.service }}</td>
                   <td>{{ del_note.units }}</td>
                    <td>{{ del_note.u_price }}</td>
-                    <td>{{ del_note.invoiced }}</td>
+                   <td>{{ del_note.total_price }}</td>
+
+                    
                   
                   
                   
                   </tr>
                   {% endfor %}
+
+                  <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                   <td></td>
+                   <td></td>
+                  <td><b>Total Units</td>
+                  <td><b>{{ company.tot_units}} gal & {{ company.tot_trips }} Trips</td>
+                   <td><b>Total</td>
+                   <td><b>{{ company.tot_price}} Qar</td>
+
+                    
+                  
+                  
+                  
+                  </tr>
             </table>
 
                 
           </div>
+
+          <div class="row">
+           <div  class="col-sm-2">
+           
+              <a href="print_tripsheet?company={{ company.id}}&site={{ company.site }}&service={{company.service }}&from_date={{ company.from_date }}&to_date={{ company.to_date}}"  target="_blank"><button class="btn btn-lg btn-success  ">Print Tripsheet </button></a>
+            </form>
+       </div>
+
+       <div class="row">
+           <div  class="col-sm-2">
+      <a href='#'> <button class="btn btn-lg btn-warning  " type="submit">Back </button></a>
+       </div>
+
+       <div  class="col-sm-2">
+
+       </div>
+ <div  class="col-sm-3">
+         <form  role="form" action="process" method="post">
+   			     {% csrf_token %}
+              <input type="hidden" name="from_date"  value="{{ company.from_date }}" />
+              <input type="hidden" name="to_date"  value="{{ company.to_date }}" />
+             <input type="hidden" name="service"  value="{{ company.service }}" />
+              <input type="hidden" name="site"  value="{{ company.site }}" />
+              <input type="hidden" name="company"  value="{{ company.id }}" />
+             
+              <div class="form-group input-group">
+            <span class="label label-primary">Add Discount If any:</span>
+              <input type="number" class="form-control" name="discount"   value ="0"  required><br>
+                </div>
+
+     
+       </div>
+
+        <div  class="col-sm-2">
+        
+              
+       <button class="btn btn-lg btn-success  " type="submit">Create Invoice </button>
+       </form>
+       </div>
+
+        </div> <!-- row ends -->
+</b>
+</div>
         </div>
+        
       </div>
+      
     </div>
 
 

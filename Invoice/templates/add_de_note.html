@@ -8,19 +8,35 @@ function w() {
 swal({   title: "Mughal Invoice",   text: "Company - Site Association Not provided",   type: "warning",  
  showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Add rate for the mentioned site",   closeOnConfirm: false },
  function(){
-    window.location.href = 'add_company';});
+    window.location.href = 'add_rate';});
 
  
 };
 function s() {
-swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",  
- showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "View Sites",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Delivery Note Added",   type: "success",  
+ showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Add Again",   closeOnConfirm: false },
  function(){
-    window.location.href = 'add_site';});
+    window.location.href = 'add_de_note';});
 
  
 };
 
+function myFunction(e){
+
+   var e = document.getElementById("service");
+   var sel2=  e.options[e.selectedIndex].value;
+   if (sel2 == 's2')
+   {
+      document.getElementById('Input').value = 1; 
+      document.getElementById('Input').readOnly = true; 
+   }
+   else
+   {
+     document.getElementById('Input').value = ""; 
+      document.getElementById('Input').placeholder = "Enter 1 Incase of Trip"; 
+      document.getElementById('Input').readOnly = false; 
+   }
+};
 
 </script>
   
@@ -132,7 +148,7 @@ swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",
 
              <div class="form-group">
             <span class="label label-primary">Select Service:</span>
-        <select class="form-control" class="form-control"   name="service" required>
+        <select class="form-control" class="form-control" onchange="myFunction(event)"  id="service" name="service" required>
        
           
         <option value="s1"> Sweet Water Supply
@@ -149,7 +165,7 @@ swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",
      <div class="col-sm-8">  
                <div class="form-group">
             <span class="label label-primary">Enter Units:</span>
-              <input type="number" class="form-control" placeholder="Enter  1 in case of trip" name="units" required><br>
+              <input type="number" class="form-control" placeholder="Enter  1 in case of trip" name="units" id="Input" required><br>
               </div>
  </div>
     <div class="col-sm-4">  

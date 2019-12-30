@@ -16,8 +16,8 @@
 
 
 function w() {
-swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warning",  
- showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Login to continue",   closeOnConfirm: false },
+swal({   title: "Mughal",   text: "Already Invoiced!!!",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please select un-invoiced deliveries",   closeOnConfirm: false },
  function(){
     window.location.href = '/';});
 
@@ -113,17 +113,17 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     <div class="row">
         <div class="col-xs-12">
     		<div class="invoice-title">
-    			<h2>Invoice</h2><h3 class="pull-right">Invoice #{{invoice.id}}</h3>
+    			<h2>Invoice</h2><h3 class="pull-right">Invoice #{{company.inv}}</h3>
     		</div>
     		<hr>
     		<div class="row">
     			<div class="col-xs-6">
     				<address>
     				<strong>Billed To:</strong><br>
-    					{{invoice.name}}<br>
-    					{{invoice.addess}}<br>
+    				<h3><b>	{{company.name}} </h3></b>
+    					{{company.address}}<br>
     				
-    					{{invoice.contact}}
+    					{{company.contact}}
     				</address>
     			</div>
     			<div class="col-xs-6 text-right">
@@ -145,7 +145,7 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     			<div class="col-xs-6 text-right">
     				<address>
     					<strong>Invoice Date:</strong><br>
-    					{{ invoice.date }}<br><br>
+    					{{ company.date }}<br><br>
     				</address>
     			</div>
     		</div>
@@ -164,8 +164,8 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     						<thead>
                                 <tr>
         							<td class="text-center"><strong>SINO</strong></td>
+									<td class="text-right"><strong>Service</strong></td>
         							<td class="text-center"><strong>Site/Unit rate</strong></td>
-        							<td class="text-right"><strong>Units*loads</strong></td>
         							<td class="text-right"><strong>Total Units</strong></td>
                       <td class="text-right"><strong>Total price</strong></td>
                                 </tr>
@@ -173,47 +173,43 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     						<tbody>
     							<!-- foreach ($order->lineItems as $line) or some such thing here -->
                
-                  {% for sale in sales %}
+                  {% for inv in invoice %}
                   
     							<tr>
-                    <td class="text-center">{{ sale.sino }}</td>
-    								<td class="text-center">{{sale.name}}/{{sale.uprice}}</td>
+                    <td class="text-center">{{ forloop.counter }}</td>  								
     								
-    								<td class="text-right">{{sale.uload}} * {{sale.loads}}</td>
-    								<td class="text-right">{{ sale.units }}</td>
-                    	<td class="text-right">{{ sale.price }}</td>
+    								<td class="text-right">{{ inv.service  }}</td>
+									<td class="text-center">{{inv.site}}/{{inv.unit_price}}</td>
+    								<td class="text-right">{{ inv.units }}</td>
+                    	<td class="text-right">{{ inv.sum }}</td>
                     
     							</tr>
                  
                   {% endfor %}
+				  {% if company.discount != '0' %}
                   <tr>
     								<td class="thick-line"></td>
     								<td class="thick-line"></td>
+									
                     	<td class="thick-line"></td>
     								<td class="thick-line text-center"><strong>Subtotal</strong></td>
-    								<td class="thick-line text-right">{{invoice.to }}</td>
+    								<td class="thick-line text-right">{{company.total }}</td>
     							</tr>
                   <tr>
     								<td class="no-line"></td>
     								<td class="no-line"></td>
-                    <td class="no-line"></td>
-    								<td class="no-line text-center"><strong>Total Units</strong></td>
-    								<td class="no-line text-right">{{ invoice.tot_units }}</td>
-    							</tr>
-    							<tr>
-    								<td class="no-line"></td>
-    								<td class="no-line"></td>
+                   
                     <td class="no-line"></td>
     								<td class="no-line text-center"><strong>Discount</strong></td>
-    								<td class="no-line text-right">{{ invoice.discount }}</td>
+    								<td class="no-line text-right">{{ company.discount }}</td>
     							</tr>
-                  
+                  {% endif %}
     							<tr>
     								<td class="no-line"></td>
     								<td class="no-line"></td>
                     <td class="no-line"></td>
     								<td class="no-line text-center"><strong>Total</strong></td>
-    								<td class="no-line text-right">{{ invoice.total }}</td>
+    								<td class="no-line text-right">{{ company.total1 }}</td>
     							</tr>
     						</tbody>
     					</table>
@@ -232,16 +228,9 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
            
           <div class="row placeholders">
-            <div class="col-xs-6 col-sm-4 placeholder">
-               <form action="edit_inv" method="post">
-                  {% csrf_token %}
-                  <input type="hidden" name="inv_id" value="{{ invoice.id }}" />
-              
-                  <button class="btn btn-lg btn-danger " action="submit" >
-                  Edit </button>
-            </div>
+         
   		<div class="col-xs-6 col-sm-4 placeholder">
-             <a href="GeneratePdf?inv_id={{invoice.id}}"  target="_blank"> <button type="button" class="btn btn-lg btn-success">Print</button></a>
+             <a href="GeneratePdf?inv_id={{ company.inv}}"  target="_blank"> <button type="button" class="btn btn-lg btn-success">Print</button></a>
              
             </div>
 
@@ -256,7 +245,18 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
  
+{% for message in messages %}
+   
+     {% if message.tags == "error" %} 
+     <body onload=w()>
 
+     {% endif %}
+       {% if message.tags == "info" %} 
+     <body onload=s()>
+     
+     {% endif %}
+ </li>
+{% endfor %}
 {% else %}
 
  <body onLoad="w()">

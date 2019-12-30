@@ -2,12 +2,13 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from company.models import Company,Rate,DelNote
 from login.models import Sites
-from home.models import Invoice,Sales
+from home.models import Invoice,Invoice_Details
 from django.contrib import messages
 from datetime import datetime
 from home.utils import render_to_pdf #created in step 4
 from django.views.generic import View
 from django.http import HttpResponse
+from num2words import num2words
 # Create your views here.
 from django.db.models import Max
 
@@ -56,80 +57,141 @@ def view_site(request):
 def process(request):
     post_data = dict(request.POST.lists())
     post_data.pop('csrfmiddlewaretoken',None)
-    total= post_data['total_amount'][0]
+    company = request.POST['company']
+    site = request.POST['site']
+    service = request.POST['service']
+    from_date = post_data['from_date'][0]
+    to_date = post_data['to_date'][0]
     discount = post_data['discount'][0]
-    total_units=  post_data['tot_units'][0]
-    customer = post_data['customer'][0]
-    contact = post_data['contact'][0]
-    address = post_data['address'][0]
-    date=post_data['date'][0]
-    date = datetime.strptime(date, "%Y/%m/%d")
-    #print(total)    
-    ob = Invoice(customer=customer,address=address,contact=contact,discount=discount,total_price=total,total_units=total_units,date=date)
-    ob.save()
-    inv_id = Invoice.objects.latest('id').id
-    if discount == '':
-        discount = "0"
-    invoice  = {'date':date,'name':customer,'address':address,'id':inv_id,'discount':float(discount),'contact':contact,'total':total,'tot_units':total_units,'to':float(total)+float(discount)}   
-    sale = []
-    sn={}
-    i=1
-    for key in post_data:
-        
-        if key.startswith('selid'):
-            site_id = post_data[key][0]
-            s= Sites.objects.get(id=site_id)
-            sn['name']=s.name
-            sn['uprice']=s.Unit_price
-        if key.startswith('sel1id'):
-            units_load= post_data[key][0]
-            sn['uload']=units_load
-        if key.startswith('lodid'):
-            no_loads = post_data[key][0]
-            sn['loads']=no_loads
-        if key.startswith('untid'):
-            tot_units = post_data[key][0]
-            sn['units']=tot_units
-        if key.startswith('totid'):
-            sn['sino']=i
-            i=i+1
-            tot_price = post_data[key][0]
-            sn['price']=tot_price
-            
-            sale.append(sn)
-            sn={}
-            ob= Sales(inv_id=inv_id,site_id=site_id,units_load=units_load,no_loads=no_loads,tot_units=tot_units,tot_price=tot_price)
-            ob.save()
-        
+    today=datetime.today()
+    today = today.strftime("%Y-%m-%d")
+
+    if site == 'all' and service  == 'all':
+
+        del_notes = DelNote.objects.filter(company_id=company,invoiced = False,date__range=(from_date, to_date))
+
+    elif service =='all' and site != 'all':
+
+        del_notes = DelNote.objects.filter(company_id=company,site_id = site,invoiced = False,date__range=(from_date, to_date))
+
+    elif site == 'all' and service != 'all':
+        del_notes = DelNote.objects.filter(company_id=company,service = service,invoiced = False,date__range=(from_date, to_date))
+    else :
+        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id = site,invoiced = False,date__range=(from_date, to_date))
     
-    print(sn)
-    return render(request,'invoice_added.html',{'invoice':invoice,'sales':sale})
+    if len(del_notes) == 0 :
+        print(len(del_notes))
+        messages.error(request,'duplicate')
+        return render(request,'invoice_added.html')
+    else:
+        ob = Invoice(company_id = company,amount = 0, discount = discount,date =today)
+        ob.save()
+        tot_price = 0.0
+        inv_print = []
+        inv = {}    
+        for del_note in del_notes:   
+            
+            rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)        
+            ob1 = Invoice_Details(inv_id =ob.id ,del_note_id  = del_note.id, rate_id = rate.id )
+            ob1.save()
+            site_ob = Sites.objects.get(id = del_note.site_id)
+
+            
+            inv['site_id'] = site_ob.id
+            inv['site'] = site_ob.name
+            
+
+            if del_note.units == '1' and del_note.service == 's1':
+                tot = float(del_note.units) * float(rate.service2)
+                inv['sum'] = float(del_note.units) * float(rate.service2)
+                inv['unit_price'] = rate.service2
+                inv['units'] = 1
+                inv['service'] = 'Sweet Water (in Trips)'
+            elif del_note.service == 's1':            
+                tot = float(del_note.units) * float(rate.service1)
+                inv['sum'] = float(del_note.units) * float(rate.service1)
+                inv['unit_price'] = rate.service1
+                inv['units'] = int(del_note.units)
+                inv['service'] = 'Sweet Water (in Gallon)'
+            else:
+                tot = float(del_note.units) * float(rate.service3)
+                inv['sum'] = float(del_note.units) * float(rate.service3)
+                inv['unit_price'] = rate.service3                
+                inv['units'] = 1
+                inv['service'] = 'Sewage Water Removal (in Trips)'
+            tot_price =  tot + tot_price
+            del_note.invoiced = True
+            del_note.inv_id = ob.id
+            del_note.save()
+            flag  = False
+            for i in range (len(inv_print)):
+                if inv_print[i]['site_id'] == inv['site_id'] and inv_print[i]['service'] == inv['service']:
+                    flag = True
+                    inv_print[i]['sum'] = float(inv_print[i]['sum'])+ float( inv['sum'])
+                    inv_print[i]['units'] = int(inv_print[i]['units'])  +  int(inv['units'])
+            if flag == False:
+                inv_print.append(inv)
+            inv = {}
+        ob.amount = tot_price
+        ob.save()        
+        company_data  = Company.objects.get(id=company)
+        company_data.total = tot_price
+        company_data.total1 = tot_price - float(discount)
+        company_data.discount = discount
+        company_data.inv = ob.id
+        company_data.date = ob.date
+        #print(inv_print)
+        return render(request,'invoice_added.html',{'invoice':inv_print,'company':company_data})
 
 def GeneratePdf(request):
         get_data = dict(request.GET.lists())
         id=get_data['inv_id'][0]
         invoice = Invoice.objects.get(id=id)
-        sales= list(Sales.objects.filter(inv_id=id))
-        sal = []
-        sn={}
+        sales =   Invoice_Details.objects.filter(inv_id=id)
+        inv_print = []
         i=1
+        tot_price = 0.0
+        inv_print = []
+        inv = {}   
         for sale in sales:
-            s= Sites.objects.get(id=sale.site_id)
-            sn['name']=s.name
-            sn['uprice']=s.Unit_price
-            sn['uload']=sale.units_load
-            sn['loads']=sale.no_loads
-            sn['units']=sale.tot_units
-            sn['sino']=i
-            i=i+1
-            sn['price']=sale.tot_price
-            
-            sal.append(sn)
-            sn={}
-        if invoice.discount == '':
-            invoice.discount = "0"
-        to=float(invoice.total_price)+float(invoice.discount)
-        pdf = render_to_pdf('invoice.html',{ 'invoice':invoice,'sales':sal,'to':to})
+            del_note = DelNote.objects.get(id = sale.del_note_id)
+            rate = Rate.objects.get(id = sale.rate_id)
+            site_ob = Sites.objects.get(id = del_note.site_id)            
+            inv['site_id'] = site_ob.id
+            inv['site'] = site_ob.name      
+
+            if del_note.units == '1' and del_note.service == 's1':
+                tot = float(del_note.units) * float(rate.service2)
+                inv['sum'] = float(del_note.units) * float(rate.service2)
+                inv['unit_price'] = rate.service2
+                inv['units'] = 1
+                inv['service'] = 'Sweet Water (in Trips)'
+            elif del_note.service == 's1':            
+                tot = float(del_note.units) * float(rate.service1)
+                inv['sum'] = float(del_note.units) * float(rate.service1)
+                inv['unit_price'] = rate.service1
+                inv['units'] = int(del_note.units)
+                inv['service'] = 'Sweet Water (in Gallon)'
+            else:
+                tot = float(del_note.units) * float(rate.service3)
+                inv['sum'] = float(del_note.units) * float(rate.service3)
+                inv['unit_price'] = rate.service3                
+                inv['units'] = 1
+                inv['service'] = 'Sewage Water Removal (in Trips)'
+            tot_price =  tot + tot_price
+            flag  = False
+            for i in range (len(inv_print)):
+                if inv_print[i]['site_id'] == inv['site_id'] and inv_print[i]['service'] == inv['service']:
+                    flag = True
+                    inv_print[i]['sum'] = float(inv_print[i]['sum'])+ float( inv['sum'])
+                    inv_print[i]['units'] = int(inv_print[i]['units'])  +  int(inv['units'])
+            if flag == False:
+                inv_print.append(inv)
+            inv = {}           
+        company_data  = Company.objects.get(id=invoice.company_id)
+        invoice.total1 = float(invoice.amount) - float(invoice.discount) 
+        invoice.words = num2words(invoice.total1)
+        pdf = render_to_pdf('invoice.html',{ 'invoice':invoice,'sales':inv_print,'invoice1':company_data})
         return HttpResponse(pdf, content_type='application/pdf')           
 def get_invoice(request):   
     invoice = Invoice.objects.all().order_by('-date')[:5]

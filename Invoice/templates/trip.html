@@ -1,0 +1,113 @@
+
+  <html>   
+
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/jquery.min.js"></script> 
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/bootstrap.min.js"></script>
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/docs.min.js"></script>
+	<link href="/home/lals/Desktop/accounting/Invoice/assets/css/bootstrap.min.css" rel="stylesheet">
+<div class="row col-md-12 container" id="invoice" style="background-color:white">
+
+<title>Mughal TripSheet</title>
+<style >
+
+#td_inner td
+{
+	text-align:center;
+}
+
+</style>
+
+
+
+    <div class="row">
+        <div class="col-xs-12">
+					 <td class="title">
+                                <img src="/home/lals/Desktop/accounting/Invoice/assets/images/logo.png" style="max-width:50px;">
+                            </td>
+							<br>
+
+							<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+    
+           <div class="well">
+  
+        <h2><b> Trip Sheet From  {{ company.from_date }} to {{ company.to_date}} </h2>
+      
+      <h1>{{ company.name }}</h1> 
+        
+        Address : {{ company.address }}
+        <br>
+        Contact : {{ company.contact }}
+        <br>
+</b>
+</div>
+           <br>
+            <div class='table-responsive'  >
+            <table class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:10px;'>
+              <thead >
+                <tr>
+                 <th> SINO</th>
+                  <th>Delivery NoteID</th>
+                  <th>Date </th>
+                  <th>Site Name</th>
+                  <th>Vehicle No:</th>
+                   <th>Service</th>
+                  <th>Units</th>
+                  <th>Unit Price </th>
+                   <th>Total Price </th>
+              
+<tbody id = "td_inner">
+                  {% for del_note in del_notes%}
+                  <tr>
+                  <td	>{{ forloop.counter  }} </td>
+                  <td>{{del_note.del_id}}</td>
+                  <td>{{ del_note.date}}</td>
+                   <td>{{ del_note.site_name }}</td>
+                   <td>{{ del_note.veh_no }}</td>
+                  <td>{{ del_note.service }}</td>
+                  <td>{{ del_note.units }}</td>
+                   <td>{{ del_note.u_price }}</td>
+                   <td>{{ del_note.total_price }}</td>
+
+                    
+                  
+                  
+                  
+                  </tr>
+                  {% endfor %}
+
+                  <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                   <td></td>
+                   <td></td>
+                  <td><b>Total Units</td>
+				  {% if  company.tot_units == 0 %} 
+				  <td><b>{{ company.tot_trips }} Trips</td>
+
+				  {% elif  company.tot_trips  == 0 %} 
+				  
+				  <td><b>{{ company.tot_units}} gal </td>
+				  {% else %} 
+				  <td><b>{{ company.tot_units}} gal & {{ company.tot_trips }} Trips</td>
+				  {% endif %}
+                  
+                   <td><b>Total</td>
+                   <td><b>{{ company.tot_price}} Qar</td>
+
+                    
+                  
+                  
+                  
+                  </tr>
+
+				  </tbody>
+            </table>
+
+                
+    </div>
+
+
+
+</div>
+<html>
