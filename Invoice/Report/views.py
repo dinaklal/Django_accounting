@@ -27,11 +27,17 @@ def report(request):
         today = post_data['to_date'][0]
         print(post_data)
         invoice = Invoice.objects.filter(date__range=(month_start, today))
+    inv_list = []
+    for inv in invoice:
+        i = inv.company_id
+        company = Company.objects.get(id = i)
+        inv.customer = company.name
+        inv.contact = company.contact
+        inv_list.append(inv)
     no_of_rows = invoice.count()
-    total_price = invoice.aggregate(Sum('total_price'))['total_price__sum']
+    total_price = invoice.aggregate(Sum('amount'))['amount__sum']
     discount = invoice.aggregate(Sum('discount'))['discount__sum']
-    total_units = invoice.aggregate(Sum('total_units'))['total_units__sum']
-    return render(request,'report.html',{'units':total_units,'today':today,'month_start':month_start,'invoice':invoice,'rows':no_of_rows,'total':total_price,'discount':discount})
+    return render(request,'report.html',{'today':today,'month_start':month_start,'invoice':inv_list,'rows':no_of_rows,'total':total_price,'discount':discount})
 def add_money(request):
     if not request.POST :
         today = datetime.today()
@@ -49,21 +55,50 @@ def add_money(request):
         messages.info(request,'done')
         return redirect('add_money')
 def summary(request):
-    if not request.POST :
+    if not request.GET :
         today = datetime.today()
         today = today.strftime("%Y-%m-%d")
         company = Company.objects.all()
         c= []
         for com in company:
             invoice = Invoice.objects.filter(company_id = com.id)
-            print(invoice)
-            print(invoice.aggregate(Sum('discount'))['discount__sum'])
-            #total_price = float(invoice.aggregate(Sum('amount'))['amount__sum']) - float(invoice.aggregate(Sum('discount'))['discount__sum'])
-            #com.tot = total_price
-            #c.append(com)
-            
+            if invoice.count() > 0:
+                total_price = invoice.aggregate(Sum('amount'))['amount__sum'] - invoice.aggregate(Sum('discount'))['discount__sum']
+            else: 
+                total_price = 0
+            com.tot = total_price            
+            money = Account.objects.filter(from_company = com.id)
+            if money.count() > 0:
+                total_price = money.aggregate(Sum('amount'))['amount__sum']
+            else: 
+                total_price = 0
+            com.m = total_price
+            com.b = com.tot - com.m
+            c.append(com)
+        total_price = Invoice.objects.all().aggregate(Sum('amount'))['amount__sum'] 
+        tot_b = Invoice.objects.all().aggregate(Sum('discount'))['discount__sum']
+        tot_m = Account.objects.all().aggregate(Sum('amount'))['amount__sum']
+        tot = {}
+        tot['in'] = Invoice.objects.all().count()
+        tot['price'] = total_price
+        tot['dis'] = tot_b
+        tot['m'] = tot_m
+        if total_price != None and tot_b != None and tot_m != None:
+         tot['b']=  total_price - tot_b - tot_m
+        return render(request,'summary.html',{'company':c,'today':today,'tot':tot})
+    else:
+        comp_id = request.GET['company_id']
+        tot ={}
+        tot['name'] = Company.objects.get(id = comp_id).name
+        amount = Account.objects.filter(from_company = comp_id)
+        invoice = Invoice.objects.filter(company_id = comp_id)       
+        tot['price']= invoice.aggregate(Sum('amount'))['amount__sum'] 
+        tot['in']= invoice.count()
+        tot['dis'] = invoice.aggregate(Sum('discount'))['discount__sum'] 
+        tot['m'] = amount.aggregate(Sum('amount'))['amount__sum'] 
+        if tot['price'] != None and tot['dis']  != None and tot['m'] != None:
+            tot['b']=  tot['price']- tot['dis'] - tot['m'] 
+        return render(request,'summary1.html',{'amount':amount,'tot':tot})
 
-        return render(request,'summary.html',{'company':c,'today':today})
-   
     
     

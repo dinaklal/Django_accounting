@@ -75,7 +75,7 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
              <li><a href="add_site">Add Site</a></li>
             <li ><a href="view_site">Vew Site</a></li>
                  <li ><a href="get_invoice">View/Edit Invoice</a></li>
-            <li class="active"><a href="report">Reports</a></li>
+            <li class="active"><a href="summary">Summary</a></li>
            
             
 		
@@ -91,56 +91,37 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
            
           
  <div class="row" >
-         <form  role="form" action="report" method="post">
-   			 {% csrf_token %}
-         <div class="col-md-3 col-md-offset-2" >
-            <div class="form-group">
-            <span class="label label-primary">From Date</span>
-            <input type="date" name='from_date' class="form-control"  value="{{ month_start }}">
-            </div>
-         </div>
-         <div class="col-md-3 col-md-offset-1" >
-            <div class="form-group">
-            <span class="label label-primary">To Date</span>
-            <input type="date" class="form-control" name='to_date' value="{{ today }}">
-            </div>
-        
-         </div>
-           <div class="col-md-2" >
-        <button class="btn btn-lg btn-success btn-block pull-right" type="submit">View</button>
-         </form>
-        </div>
-        </div>
-
-       <h3 class="p-3 mb-2 bg-primary bg-dark ">Invoices From {{ month_start }} to {{ today }}</h3>
+         
+       <h3 class="p-3 mb-2 bg-primary bg-dark ">Summary of Accounts - {{ tot.name }}</h3>
 <div class="well">
  
         <br>
-        Total Invoices : {{ rows }}
+        Total Invoices : {{ tot.in }}
         <br>
-        Total Price : {{ total }}
+        Total Price : {{ tot.price }}
         <br>
-        Total Discount Given : {{ discount }}
-        
+        Total Discount Given : {{ tot.dis }}
+        <br>
+        Total Amount Retrieved : {{ tot.m }}
+        <br>
+        Balance: {{ tot.b }}
 </div>
 
 <div class='table-responsive'  >
             <table class='table table-responsive table-bordered' style='background-color:white;'>
               <thead >
                 <tr>
-                 <th> Invoice Id</th>
-                  <th>Company</th>
-                  <th>Total Amount</th>
-                  <th>Contact</th>
-                  <th class="col-md-4">Date</th>
+                 <th> SINO</th>
+                  <th >Amount Given</th>
+                  <th >Date</th>
+              
                   
 
-                  {% for inv in invoice%}
+                  {% for inv in amount %}
                   <tr>
-                  <td>{{ inv.id }}</td><td>{{ inv.customer }}</td><td>{{ inv.amount }}</td>
-                  <td>{{ inv.contact }}</td><td>{{ inv.date }}</td>
-                  
-                  
+                  <td>{{ forloop.counter }}</td><td>{{ inv.amount }}</td>
+                  <td>{{ inv.date }}</td>
+           
                  
                   </tr>
                   {% endfor %}

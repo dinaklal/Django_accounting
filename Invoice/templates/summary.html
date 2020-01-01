@@ -75,7 +75,7 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
              <li><a href="add_site">Add Site</a></li>
             <li ><a href="view_site">Vew Site</a></li>
                  <li ><a href="get_invoice">View/Edit Invoice</a></li>
-            <li class="active"><a href="report">Reports</a></li>
+            <li class="active"><a href="summary">Summary</a></li>
            
             
 		
@@ -92,17 +92,19 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
           
  <div class="row" >
          
-       <h3 class="p-3 mb-2 bg-primary bg-dark ">Invoices From {{ month_start }} to {{ today }}</h3>
+       <h3 class="p-3 mb-2 bg-primary bg-dark ">Summary of Accounts </h3>
 <div class="well">
  
         <br>
-        Total Invoices : {{ rows }}
+        Total Invoices : {{ tot.in }}
         <br>
-        Total Price : {{ total }}
+        Total Price : {{ tot.price }}
         <br>
-        Total Discount Given : {{ discount }}
+        Total Discount Given : {{ tot.dis }}
         <br>
-        Total Units : {{ units }}
+        Total Amount Retrieved : {{ tot.m }}
+        <br>
+        Balance: {{ tot.b }}
 </div>
 
 <div class='table-responsive'  >
@@ -111,16 +113,19 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
                 <tr>
                  <th>  Id</th>
                   <th>company</th>
-                  <th>Total Amont</th>
+                  <th>Total Invoiced Amount</th>
                   <th>Contact</th>
-                  <th class="col-md-4">Date</th>
+                  <th >Total Amount Given</th>
+                  <th >Balance</th>
+                  <th ></th>
                   
 
                   {% for inv in company %}
                   <tr>
-                  <td>{{ inv.id }}</td><td>{{ inv.name }}</td><td>{{ inv.total_price }}</td>
-                  <td>{{ inv.contact }}</td><td>{{ inv.date }}</td>
-                  
+                  <td>{{ inv.id }}</td><td>{{ inv.name }}</td><td>{{ inv.tot}}</td>
+                  <td>{{ inv.contact }}</td><td>{{ inv.m }}</td><td>{{ inv.b }}</td>
+            <td><a href= "summary?company_id={{ inv.id }}" > <button class="btn btn-warning " action="submit" >
+                  View Details </button></a> </td>
                   
                  
                   </tr>
