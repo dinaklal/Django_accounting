@@ -250,6 +250,9 @@ def print_tripsheet(request):
 
     pdf = render_to_pdf('trip.html',{ 'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes})
     return HttpResponse(pdf, content_type='application/pdf') 
+def view_company(request):
+    company = Company.objects.all()
+    return render(request,'view_company.html',{'company':company})
 
 
 
