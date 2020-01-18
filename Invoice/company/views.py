@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from company.models import Company,Rate,DelNote
 from login.models import Sites
+from home.models import Invoice_Details,Invoice
 from home.utils import render_to_pdf 
 from django.http import HttpResponse
 #from home.models import 
@@ -253,6 +254,230 @@ def print_tripsheet(request):
 def view_company(request):
     company = Company.objects.all()
     return render(request,'view_company.html',{'company':company})
+def edit_del_note(request):
+    if request.method != 'POST':
+        del_notes = DelNote.objects.all().order_by('-date')[:5]
+        d = []
+        element = {}
+        for del_note in del_notes:
+            element['id']= del_note.id
+            element['del_id'] = del_note.del_note_id
+            element['site_id'] = del_note.site_id
+            site = Sites.objects.get(id=del_note.site_id)
+            element['site_name'] = site.name
+            element['company'] = Company.objects.get(id = del_note.company_id).name
+            
+            if del_note.units == '1' and del_note.service == 's1':
+                element['service'] = "Sweet Water "
+                element['units'] = del_note.units + ' Trip'
+            
+            elif del_note.service == 's1':
+                element['service'] = "Sweet Water "
+                element['units'] = del_note.units + ' Gallon'
+            
 
+            else:
+                element['service'] = "Sewage Water Removal"
+                element['units'] = del_note.units + ' Trip'
+            element['veh_no'] = del_note.veh_no
+            if del_note.inv_id == 0 :
+                element['inv'] = "Nill"
+            else:
+                element['inv'] = "#"+str(del_note.inv_id )
+            element['date'] = del_note.date
+            d.append(element)
+            element = {}
+        today=datetime.today()
+        today = today.strftime("%Y-%m-%d")
+        #print(today)
+        return render(request,'edit_dl_note.html',{'delnote':d,'date':today})
+    else:
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        del_note = DelNote.objects.get(id = request.POST['del_note_id'])
+        company = Company.objects.all()
+        sites = Sites.objects.all()
+        rates = Rate.objects.all()
+        del_note.date = del_note.date.strftime("%Y-%m-%d")
+        return render(request,'edit_del_note2.html',{'company':company,'sites':sites,'rate':rates,'del_note':del_note})    
+def add_de_note2(request):
+    if request.method == 'POST':
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        id = request.POST['id']
+        company = request.POST['company']
+        site = request.POST['site']
+        del_id = request.POST['del_id']
+        veh_no = request.POST['veh_no']
+        service = request.POST['service']
+        units = request.POST['units']
+        date = request.POST['date']
+        if Rate.objects.filter(company_id=company,site_id = site ).exists():
+           
+            ob=DelNote.objects.get(id = id)
+            ob.del_note_id= del_id
+            ob.veh_no = veh_no
+            ob.company_id=company
+            ob.site_id = site
+            ob.date = date
+            ob.service = service
+            ob.units = units 
+            ob.save()
+            inv_id = Invoice_Details.objects.filter(del_note_id = id)
+            if inv_id:
+                inv_id = inv_id[0].inv_id
+            else:
+                inv_id = " "
+            messages.info(request,'done')
+            return render(request,'edit_del_note2.html',{'inv_id':inv_id})
+           
+        else:
+            messages.error(request,'duplicate')
+            return render(request,'edit_del_note2.html')
 
+def edit_del3(request):
+    if request.method == 'POST':
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        inv_id = request.POST['inv_id']
+        discount = request.POST['discount']
+        del_notes = DelNote.objects.filter(inv_id=inv_id)
+        invoice = Invoice.objects.get(id=inv_id)
+        invoice.discount = discount
+       
+        today=datetime.today()
+        today = today.strftime("%Y-%m-%d")
+
+        invoice.date = today
+        invoice.save()
+
+        if len(del_notes) == 0 :
+            print(len(del_notes))
+            invoice.delete()
+            Invoice_Details.objects.filter(inv_id = inv_id).delete()
+            messages.error(request,'duplicate')
+            return render(request,'invoice_added.html')
+        else:
+            tot_price = 0.0
+            inv_print = []
+            inv = {}  
+            for del_note in del_notes:                   
+                rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)        
+                ob1 = Invoice_Details.objects.get(inv_id =inv_id ,del_note_id  = del_note.id)
+                ob1.rate_id = rate.id
+                ob1.save()
+                site_ob = Sites.objects.get(id = del_note.site_id)                       
+                inv['site_id'] = site_ob.id
+                inv['site'] = site_ob.name
+                if del_note.units == '1' and del_note.service == 's1':
+                    tot = float(del_note.units) * float(rate.service2)
+                    inv['sum'] = float(del_note.units) * float(rate.service2)
+                    inv['unit_price'] = rate.service2
+                    inv['units'] = 1
+                    inv['service'] = 'Sweet Water (in Trips)'
+                elif del_note.service == 's1':            
+                    tot = float(del_note.units) * float(rate.service1)
+                    inv['sum'] = float(del_note.units) * float(rate.service1)
+                    inv['unit_price'] = rate.service1
+                    inv['units'] = int(del_note.units)
+                    inv['service'] = 'Sweet Water (in Gallon)'
+                else:
+                    tot = float(del_note.units) * float(rate.service3)
+                    inv['sum'] = float(del_note.units) * float(rate.service3)
+                    inv['unit_price'] = rate.service3                
+                    inv['units'] = 1
+                    inv['service'] = 'Sewage Water Removal (in Trips)'
+                tot_price =  tot + tot_price
+                del_note.invoiced = True
+                del_note.inv_id = inv_id
+                del_note.save()
+                flag  = False
+                for i in range (len(inv_print)):
+                    if inv_print[i]['site_id'] == inv['site_id'] and inv_print[i]['service'] == inv['service']:
+                        flag = True
+                        inv_print[i]['sum'] = float(inv_print[i]['sum'])+ float( inv['sum'])
+                        inv_print[i]['units'] = int(inv_print[i]['units'])  +  int(inv['units'])
+                if flag == False:
+                    inv_print.append(inv)
+                inv = {}
+            invoice.amount = tot_price
+            invoice.save()        
+            company_data  = Company.objects.get(id=invoice.company_id)
+            company_data.total = tot_price
+            company_data.total1 = tot_price - float(discount)
+            company_data.discount = discount
+            company_data.inv = invoice.id
+            company_data.date = invoice.date
+            return render(request,'invoice_added.html',{'invoice':inv_print,'company':company_data})
+
+    else:
+        inv_id = request.GET['inv_id']
+        invoice = Invoice.objects.get(id= inv_id)
+        inv_detail = Invoice_Details.objects.filter(inv_id = inv_id)   
+        company = Company.objects.get(id=invoice.company_id)
+        company.inv_id = inv_id
+        notes = []
+        element = {}
+        i=1
+        tot_trips = 0
+        tot_units = 0
+        tot_price = 0
+        for inv_det in inv_detail:
+            del_note = DelNote.objects.get(id = inv_det.del_note_id)
+            if del_note.company_id != company.id :
+                del_note.invoiced = False
+                del_note.inv_id = 0
+                del_note.save()
+                inv_det.delete()
+                continue
+            element['id']= del_note.id
+            del_note
+            i = i+1
+            element['del_id'] = del_note.del_note_id
+            element['site_id'] = del_note.site_id
+            site = Sites.objects.get(id=del_note.site_id)
+            element['site_name'] = site.name
+            
+            rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)
+            if del_note.units == '1' and del_note.service == 's1':
+                element['u_price'] = rate.service2
+                element['trip'] = 1
+                element['service'] = "Sweet Water "
+                element['total_price'] = float(del_note.units) * float(rate.service2)
+                element['units'] = del_note.units + ' Trip'
+                tot_trips += 1
+                
+                tot_price =  element['total_price'] + tot_price
+            elif del_note.service == 's1':
+                element['u_price'] = rate.service1
+                element['trip'] = 0
+                element['service'] = "Sweet Water "
+                element['total_price'] = float(del_note.units) * float(rate.service1)
+                tot_price =  element['total_price'] + tot_price
+                element['units'] = del_note.units + ' Gallon'
+                tot_units = tot_units +  int(del_note.units)
+
+            else:
+                element['u_price'] = rate.service3
+                element['trip'] = 1
+                tot_trips += 1
+                element['total_price'] = float(del_note.units) * float(rate.service3)
+                tot_price =  element['total_price'] + tot_price
+                element['service'] = "Sewage Water Removal"
+                element['units'] = del_note.units + ' Trip'
+            element['veh_no'] = del_note.veh_no
+        
+            element['date'] = del_note.date
+            notes.append(element)
+            element = {}
+        notes = sorted(notes, key=lambda k: k['trip']) 
+        company.tot_price  = tot_price
+        company.tot_units = tot_units
+        company.tot_trips = tot_trips
+        #today = post_data['to_date']
+        sites = Sites.objects.all()
+        rates = Rate.objects.all()
+        today=datetime.today()
+        today = today.strftime("%Y-%m-%d")
+        return render(request,'trip_sheet2.html',{'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes,'discount':invoice.discount})
 

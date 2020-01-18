@@ -64,7 +64,7 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
             <li ><a href='/'>Invoice Home</a></li>
              <li><a href="add_site">Add Site</a></li>
             <li ><a href="view_site">Vew Site</a></li>
-                 <li class="active"><a href="get_invoice">View/Edit Invoice</a></li>
+                 <li class="active"><a href="get_invoice">View/Edit Delivery Note</a></li>
             <li><a href="report">Report</a></li>
            
             
@@ -88,26 +88,33 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
             <table class='table table-responsive table-bordered' style='background-color:white;'>
               <thead >
                 <tr>
-                 <th> Invoice Id</th>
-                  <th>Customer</th>
-                  <th>Total Amont</th>
-                  <th>Discount</th>
-                  <th class="col-md-5">Date</th>
-
-                  {% for inv in invoice%}
+                 <th> Del Note Id</th>
+                  <th>Company</th>
+                  <th>Site</th>
+                  <th>Service</th>
+                   <th>Units</th>
+                   <th>Vehicle</th>
+                    <th >Invoice Id</th>
+                  <th >Date</th>
+              <th ></th>
+                  {% for inv in delnote %}
                   <tr>
-                  <td>{{ inv.inv }}</td><td>{{ inv.company }}</td><td>{{ inv.amount }}</td>
-                  <td>{{ inv.discount }}</td><td>{{ inv.date }}</td>
+                  <td>{{ inv.del_id }}</td><td>{{ inv.company }}</td><td>{{ inv.site_name }}</td>
+                  <td>{{ inv.service }}</td>
+                  <td>{{ inv.units }}</td>
+                  <td>{{ inv.veh_no }}</td>
+                  <td>{{ inv.inv}}</td>
+                  <td>{{ inv.date }}</td>
 
 
                    <td>
 
-                  <form action="edit_inv" method="post">
+                  <form action="edit_del_note" method="post">
                   {% csrf_token %}
-                  <input type="hidden" name="inv_id" value="{{ inv.id }}" />
+                  <input type="hidden" name="del_note_id" value="{{ inv.id }}" />
               
                   <button class="btn btn-warning " action="submit" >
-                  View </button>
+                  Edit </button>
                   
                   </form>
 
@@ -120,21 +127,7 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
                 <hr>
         
                 
-                <div class="row" >
-          <form  role="form" action="edit_inv" method="post">
-   			 {% csrf_token %}
-            <div class="col-md-5 col-md-offset-2" >
-            <div class="form-group">
-            <span class="label label-primary">Enter Invoice ID</span>
-            <input type="number" class="form-control pull-left" placeholder="Invoice ID" name="inv_id" required>
-              </div>
-              </div>
-          <div class="col-md-2" >
-        <button class="btn btn-lg btn-success btn-block pull-right" type="submit">View</button>
-        </div>
-      </form>
-        
-        </div>
+               
          <hr>
          <div class="row" >
          <form  role="form" action="edit_inv_date" method="post">

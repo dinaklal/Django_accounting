@@ -10,5 +10,8 @@ urlpatterns = [
     path('trip_sheet',views.trip_sheet,name='trip_sheet'),
     path('print_tripsheet',views.print_tripsheet,name='print_tripsheet'),
     path('view_company',views.view_company,name='view_company'),
+    path('edit_del_note',views.edit_del_note,name='edit_del_note'),
+    path('add_de_note2',views.add_de_note2,name='add_de_note2'),
+    path('edit_del3',views.edit_del3,name='edit_del3'),
    
     ]
