@@ -70,13 +70,13 @@ def add_rate(request):
             ob.service3 = s3
             ob.save()
             messages.info(request,'done')
-            return redirect('add_de_note')
+            return redirect('add_rate')
            
         else:
             ob=Rate(company_id=company,site_id=site,service1 = s1,service2 = s2,service3 = s3)
             ob.save()
             messages.success(request,'done')
-            return redirect('add_de_note')
+            return redirect('add_rate')
     else:
         company = Company.objects.all()
         sites = Sites.objects.all()
@@ -161,6 +161,7 @@ def trip_sheet(request):
     company.tot_price  = tot_price
     company.tot_units = tot_units
     company.tot_trips = tot_trips
+   
     today = post_data['to_date']
     sites = Sites.objects.all()
     rates = Rate.objects.all()
@@ -248,7 +249,7 @@ def print_tripsheet(request):
     rates = Rate.objects.all()
     today=datetime.today()
     today = today.strftime("%Y-%m-%d")
-
+    company.inv_id = 0
     pdf = render_to_pdf('trip.html',{ 'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes})
     return HttpResponse(pdf, content_type='application/pdf') 
 def view_company(request):
@@ -481,3 +482,68 @@ def edit_del3(request):
         today = today.strftime("%Y-%m-%d")
         return render(request,'trip_sheet2.html',{'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes,'discount':invoice.discount})
 
+def print_tripsheet_inv (request):
+    get_data = dict(request.GET.lists())
+    inv_id = get_data['inv_id'][0]
+    invoice = Invoice.objects.get(id= inv_id)
+    inv_detail = Invoice_Details.objects.filter(inv_id = inv_id)   
+    company = Company.objects.get(id=invoice.company_id)
+    company.inv_id = inv_id
+    notes = []
+    element = {}
+    i=1
+    tot_trips = 0
+    tot_units = 0
+    tot_price = 0
+    for inv_det in inv_detail:
+        del_note = DelNote.objects.get(id = inv_det.del_note_id)
+        element['id']= del_note.id
+        del_note
+        i = i+1
+        element['del_id'] = del_note.del_note_id
+        element['site_id'] = del_note.site_id
+        site = Sites.objects.get(id=del_note.site_id)
+        element['site_name'] = site.name            
+        rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)
+        if del_note.units == '1' and del_note.service == 's1':
+                element['u_price'] = rate.service2
+                element['trip'] = 1
+                element['service'] = "Sweet Water "
+                element['total_price'] = float(del_note.units) * float(rate.service2)
+                element['units'] = del_note.units + ' Trip'
+                tot_trips += 1
+                
+                tot_price =  element['total_price'] + tot_price
+        elif del_note.service == 's1':
+                element['u_price'] = rate.service1
+                element['trip'] = 0
+                element['service'] = "Sweet Water "
+                element['total_price'] = float(del_note.units) * float(rate.service1)
+                tot_price =  element['total_price'] + tot_price
+                element['units'] = del_note.units + ' Gallon'
+                tot_units = tot_units +  int(del_note.units)
+
+        else:
+                element['u_price'] = rate.service3
+                element['trip'] = 1
+                tot_trips += 1
+                element['total_price'] = float(del_note.units) * float(rate.service3)
+                tot_price =  element['total_price'] + tot_price
+                element['service'] = "Sewage Water Removal"
+                element['units'] = del_note.units + ' Trip'
+        element['veh_no'] = del_note.veh_no
+        element['date'] = del_note.date
+        notes.append(element)
+        element = {}
+    notes = sorted(notes, key=lambda k: k['trip']) 
+    company.tot_price  = tot_price
+    company.tot_units = tot_units
+    company.tot_trips = tot_trips
+        #today = post_data['to_date']
+    sites = Sites.objects.all()
+    rates = Rate.objects.all()
+    today=datetime.today()
+    today = today.strftime("%Y-%m-%d")
+     
+    pdf = render_to_pdf('trip.html',{ 'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes})
+    return HttpResponse(pdf, content_type='application/pdf') 

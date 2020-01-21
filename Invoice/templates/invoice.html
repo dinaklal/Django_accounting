@@ -10,26 +10,68 @@
 <title>Mughal Invoice</title>
 <style >
 
+#td_inner td
+{
+	text-align:center;
+}
+.a {
+  width: 100%;
+   display: table;
+  /*margin: 0 auto;*/
+   
+}
 
-
+.b,.c {
+  width:50px;
+  /*float: left;*/
+    display: table-cell;
+  
+}
 </style>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<hr>
+<center><h1>Invoice </h1></center>
+<hr>
 
 
-
-    <div class="row">
-        <div class="col-xs-12">
-					 <td class="title">
-                                <img src="/home/lals/Desktop/accounting/Invoice/assets/images/logo.png" style="max-width:50px;">
-                            </td>
-							<br>
-
-							<h2>Mughal Ltd, Qatar - 9565665</h2><br>
-    		<div class="invoice-title">
-    			<B><h3 class="pull-right"  align="right">Invoice #{{invoice.id}}</h3></B>
+    		<table>
+			<tr>
+			<td>
+			<div class="invoice-title">
+    			<B><h3 class="pull-right"  align="left">Invoice #{{invoice.id}}</h3></B>
     		</div>
-    		<hr>
-    		<div class="row">
-    			<div class="col-xs-6">
+			</td>
+<td>
+    		   <div class="c" align="right">
+    				<address>
+    					<strong>Invoice Date:</strong><br>
+    					{{ invoice.date }}<br><br>
+    				</address>
+    			</div>
+				</td>
+				</tr>
+
+
+    		</table>
+    			<div class="b">
     				<address>
     				<strong>Billed To:</strong><br>
     					<h3>{{invoice1.name	}} </h3>						
@@ -38,43 +80,28 @@
     				</address>
     			</div>
     			
-    		</div>
-    		<div class="row">
-    			<div class="col-xs-6">
-    				<address>
-    				
-    				</address>
-    			</div>
-    			<div align="right">
-    				<address>
-    					<strong>Invoice Date:</strong><br>
-    					{{ invoice.date }}<br><br>
-    				</address>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-    
+				
+
+           <br>
+            
     <div class="row">
     	<div class="col-md-12">
     		<div class="panel panel-default">
 
-    			<div class="panel-heading">
-    				<h3 class="panel-title"><strong>summary</strong></h3>
-    			</div>
+    		
     			<div class="panel-body">
     				<div class="table-responsive">
-    					<table class="table invoice-box table-condensed" >
-    						<thead>
+    					<table  class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:10px;'  >
+    						<thead style="text-align:center;">
                                 <tr class="heading">
-        							<td class="text-center"><strong>SINO</strong></td>
-        							<td class="text-center" width="70%"><strong>Service</strong></td>
-        							<td class="text-right " ><strong>Site/Unit Price</strong></td>
+        							<td style = "width:20px;" class="text-center"><strong>SINO</strong></td>
+        							<td class="text-center" width="70%"><strong>Description</strong></td>
+        							<td class="text-right " ><strong>Unit Rate</strong></td>
         							<td class="text-right"><strong>Total Units</strong></td>
                       <td class="text-right"><strong>Total price</strong></td>
                                 </tr>
     						</thead>
-    						<tbody>
+    					<tbody id = "td_inner">
     							<!-- foreach ($order->lineItems as $line) or some such thing here -->
                
                  			<!-- foreach ($order->lineItems as $line) or some such thing here -->
@@ -83,10 +110,13 @@
                   
     							<tr  class="item">
 								
-                    <td >{{ forloop.counter }}</td>  								
+                    <td style = "width:20px;" >{{ forloop.counter }}</td>  								
     								
-    								<td >{{ inv.service  }}</td>
-									<td >{{inv.site}}/{{inv.unit_price}}</td>
+    								<td >{{ inv.service  }}<br>
+									{{inv.site}}
+									</td>
+									
+									<td >{{inv.unit_price}}</td>
     								<td >{{ inv.units }}</td>
                     	<td>{{ inv.sum }}</td>
                     
@@ -94,41 +124,44 @@
 							
                  
                   {% endfor %}
-				  {% if invoice.discount != '0' %}
+				  
                   <tr>
-    								<td class="thick-line"></td>
-    								<td class="thick-line"></td>
-									
-                    	<td class="thick-line"></td>
-    								<td class="thick-line text-center"><strong>Subtotal</strong></td>
-    								<td class="thick-line text-right">{{invoice.total1 }}</td>
+    								<td style = "width:10%;" class="thick-line"></td>
+    								
+										<td class="thick-line"></td>
+                    	<td style = "width:20%;" class="thick-line"></td>
+    								<td style = "width:20%;" class="thick-line text-center"><strong>Grand Total</strong></td>
+    								<td style = "width:30%;"  class="thick-line text-right">{{invoice.total1 }} Qr</td>
     							</tr>
-                  <tr>
+               
+                   {% if invoice.discount != '0' %}
+				     <tr>
+    								<td style = "width:10%;"  class=" no-line"></td>
     								<td class="no-line"></td>
-    								<td class="no-line"></td>
-                   
-                    <td class="no-line"></td>
-    								<td class="no-line text-center"><strong>Discount</strong></td>
-    								<td class="no-line text-right">{{ invoice.discount }}</td>
+                    <td style = "width:20%;"  class="no-line"></td>
+    								<td style = "width:20%;" class="no-line text-center"><strong>Discount</strong></td>
+    								<td style = "width:30%;" class="no-line text-right">{{ invoice.discount }} Qr</td>
     							</tr>
                   {% endif %}
     							
 									</table>
-
+<br>
 									<div align="right" style="padding-right:50px;">
-    								<h2><br><strong> {{ invoice.total1 }} Qr <br>
+    								<h2>
     								{{ invoice.words }} Dirham</strong>
 									</div>
     							
     				
 						
-<hr><br>
-						Receiver Signature: .............................................<br>
-						Signature: .............................................<br>
+<br>
+						Receiver Signature: ................................................................................................................
+						Signature: .........................................................................................
     				</div>
     			</div>
     		</div>
     	</div>
+    </div>
+                
     </div>
 
 

@@ -29,9 +29,16 @@
 							<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
     
            <div class="well">
+
+           {% if company.inv_id == 0 %}
   
-        <h2><b> Trip Sheet From  {{ company.from_date }} to {{ company.to_date}} </h2>
+        <h1><b> Trip Sheet From  {{ company.from_date }} to {{ company.to_date}} </h1>
+      {% endif %}
       
+           {% if company.inv_id != 0 %}
+  
+        <h1><b> Trip Sheet for Invoice  #{{ company.inv_id }} </h1>
+      {% endif %}
       <h1>{{ company.name }}</h1> 
         
         Address : {{ company.address }}
@@ -58,7 +65,7 @@
 <tbody id = "td_inner">
                   {% for del_note in del_notes%}
                   <tr>
-                  <td	>{{ forloop.counter  }} </td>
+                  <td	style="width:10%;">{{ forloop.counter  }} </td>
                   <td>{{del_note.del_id}}</td>
                   <td>{{ del_note.date}}</td>
                    <td>{{ del_note.site_name }}</td>
@@ -76,7 +83,7 @@
                   {% endfor %}
 
                   <tr>
-                  <td></td>
+                  <td style="width:10%;"></td>
                   <td></td>
                   <td></td>
                    <td></td>

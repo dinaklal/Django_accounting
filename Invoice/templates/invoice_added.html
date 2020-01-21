@@ -32,6 +32,74 @@ swal({   title: "Mughal",   text: "Already Invoiced!!!",   type: "warning",
   
 
     
+   <style>
+
+
+/* Fixed sidenav, full height */
+.sidenav {
+
+ 
+  z-index: 1;
+  
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+ 
+}
+.dropdown-btn:hover dropdown-container
+{
+display:block;
+}
+/* Style the sidenav links and the dropdown button */
+.sidenav a, .dropdown-btn {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: white;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+/* On mouse-over */
+.sidenav a:hover, .dropdown-btn:hover {
+  color: blue;
+}
+
+/* Main content */
+
+/* Add an active class to the active dropdown button */
+.active {
+  background-color: #88adbd;
+  color: white;
+}
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+  display: none;
+  background-color: #262626;
+
+}
+ .se{
+  display: block;
+  background-color: #262626;
+
+}
+
+
+/* Some media queries for responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+  
+
+    
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -41,7 +109,7 @@ swal({   title: "Mughal",   text: "Already Invoiced!!!",   type: "warning",
 
 
 
-       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color: darkblue">
+       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color:  #65696b">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -73,20 +141,51 @@ swal({   title: "Mughal",   text: "Already Invoiced!!!",   type: "warning",
 
     <div class="container-fluid">
       <div class="row">
-        <div  class="col-sm-3 col-md-2 sidebar" >
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href='/'>Invoice Home</a></li>
-             <li><a href="add_site">Add Site</a></li>
-            <li ><a href="view_site">Vew Site</a></li>
-                 <li ><a href="get_invoice">View/Edit Invoice</a></li>
-            <li><a href="report">Report</a></li>
-           
+        <div  class="col-sm-4 col-md-2 sidebar sidenav" >
+         <ul class="nav nav-sidebar">
+            <li class="active"><a href='/'> Home</a></li>
+              <button class="dropdown-btn ">Site &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-container ">
+  <li ><a href="add_site">Add Site</a></li>
+   <li> <a href="view_site">Vew Site</a></li>
+     <li><a href="add_rate">Add Rate</a></li>
+     </div>
+     
+     <button class="dropdown-btn ">Company &nbsp&nbsp&nbsp&nbsp&nbsp
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-container ">
+            <li><a href="add_company">Add Company</a></li>
+              <li ><a href="view_company">Vew Company</a></li>
+               <li  ><a href="get_invoice">View Invoice</a></li>
+               </div>
+
+                <button class="dropdown-btn ">Delivery Note 
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-container ">
+              <li><a href="add_de_note">Add Delivery Note</a></li>
+            <li ><a href="edit_del_note">Edit Delivery Note</a></li>
+            </div>
+     <button class="dropdown-btn ">Accounts&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-container">  
+  
+           <li><a href="add_money">Add Money   </a></li>       
+           <li><a href="report">Report</a></li>
+          <li ><a href="summary">Account Summary</a></li>
+            
+           </div>
             
 		
 
           </ul>
-       
         </div>
+   
+      
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
        
 <div class="row col-md-12 container" id="invoice" style="background-color:white">
@@ -240,6 +339,24 @@ swal({   title: "Mughal",   text: "Already Invoiced!!!",   type: "warning",
 </div>
   <br>
     <br>
+	<script>
+
+/* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+ 
+  var dropdownContent = this.nextElementSibling;
+  if (dropdownContent.style.display === "block") {
+  dropdownContent.style.display = "none";
+  } else {
+  dropdownContent.style.display = "block";
+  }
+  });
+}
+    </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

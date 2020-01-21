@@ -1,0 +1,137 @@
+
+  <html>   
+
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/jquery.min.js"></script> 
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/bootstrap.min.js"></script>
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/docs.min.js"></script>
+	<link href="/home/lals/Desktop/accounting/Invoice/assets/css/bootstrap.min.css" rel="stylesheet">
+<div class="row col-md-12 container" id="invoice" style="background-color:white">
+
+<title>Mughal Invoice</title>
+<style >
+
+
+
+</style>
+
+
+
+    <div class="row">
+        <div class="col-xs-12">
+					 <td class="title">
+                                <img src="/home/lals/Desktop/accounting/Invoice/assets/images/logo.png" style="max-width:50px;">
+                            </td>
+							<br>
+
+							<h2>Mughal Ltd, Qatar - 9565665</h2><br>
+    		<div class="invoice-title">
+    			<B><h3 class="pull-right"  align="right">Invoice #{{invoice.id}}</h3></B>
+    		</div>
+    		<hr>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+    				<strong>Billed To:</strong><br>
+    					<h3>{{invoice1.name	}} </h3>						
+    					{{invoice1.address}}<br>    				
+    					Contact:{{invoice1.contact}}
+    				</address>
+    			</div>
+    			
+    		</div>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+    				
+    				</address>
+    			</div>
+    			<div align="right">
+    				<address>
+    					<strong>Invoice Date:</strong><br>
+    					{{ invoice.date }}<br><br>
+    				</address>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+
+    			<div class="panel-heading">
+    				<h3 class="panel-title"><strong>summary</strong></h3>
+    			</div>
+    			<div class="panel-body">
+    				<div class="table-responsive">
+    					<table class="table invoice-box table-condensed" >
+    						<thead>
+                                <tr class="heading">
+        							<td class="text-center"><strong>SINO</strong></td>
+        							<td class="text-center" width="70%"><strong>Service</strong></td>
+        							<td class="text-right " ><strong>Site/Unit Price</strong></td>
+        							<td class="text-right"><strong>Total Units</strong></td>
+                      <td class="text-right"><strong>Total price</strong></td>
+                                </tr>
+    						</thead>
+    						<tbody>
+    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
+               
+                 			<!-- foreach ($order->lineItems as $line) or some such thing here -->
+               
+                  {% for inv in sales %}
+                  
+    							<tr  class="item">
+								
+                    <td >{{ forloop.counter }}</td>  								
+    								
+    								<td >{{ inv.service  }}</td>
+									<td >{{inv.site}}/{{inv.unit_price}}</td>
+    								<td >{{ inv.units }}</td>
+                    	<td>{{ inv.sum }}</td>
+                    
+    							</tr>
+							
+                 
+                  {% endfor %}
+				  {% if invoice.discount != '0' %}
+                  <tr>
+    								<td class="thick-line"></td>
+    								<td class="thick-line"></td>
+									
+                    	<td class="thick-line"></td>
+    								<td class="thick-line text-center"><strong>Subtotal</strong></td>
+    								<td class="thick-line text-right">{{invoice.total1 }}</td>
+    							</tr>
+                  <tr>
+    								<td class="no-line"></td>
+    								<td class="no-line"></td>
+                   
+                    <td class="no-line"></td>
+    								<td class="no-line text-center"><strong>Discount</strong></td>
+    								<td class="no-line text-right">{{ invoice.discount }}</td>
+    							</tr>
+                  {% endif %}
+    							
+									</table>
+
+									<div align="right" style="padding-right:50px;">
+    								<h2><br><strong> {{ invoice.total1 }} Qr <br>
+    								{{ invoice.words }} Dirham</strong>
+									</div>
+    							
+    				
+						
+<hr><br>
+						Receiver Signature: .............................................<br>
+						Signature: .............................................<br>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+
+
+</div>
+<html>

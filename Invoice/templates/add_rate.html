@@ -72,10 +72,10 @@ swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "war
  
 };
 function s() {
-swal({   title: "Mughal Invoice",   text: "Company Added",   type: "success",  
- showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "View Sites",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Rate Updated",   type: "success",  
+ showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Add Deivery Note",   closeOnConfirm: false },
  function(){
-    window.location.href = 'add_site';});
+    window.location.href = 'add_de_note';});
 
  
 };
@@ -301,20 +301,20 @@ display:block;
 
           
  
-              <input type="number"  step="0.01" class="form-control" placeholder="Gallon price in associated company" id="s1" name="s1" required><br>
+              <input type="number"  step="0.0001" class="form-control" placeholder="Gallon price in associated company" id="s1" name="s1" required><br>
            
               </div>
                <div class="form-group input-group">
            
                <span class="label label-primary">Sweet Water Rate per Trip:</span>
             
-              <input type="number" step="0.01" class="form-control" placeholder="Trip price in associated company" id="s2" name="s2" required><br>
+              <input type="number" step="0.0001" class="form-control" placeholder="Trip price in associated company" id="s2" name="s2" required><br>
               
               </div>
 
                <div class="form-group input-group">
             <span class="label label-primary">Sewage Water Removal Rate per Trip:</span>
-              <input type="number" step="0.01" class="form-control" placeholder="Trip price in associated company" id="s3" name="s3" required><br>
+              <input type="number" step="0.0001"  class="form-control" placeholder="Trip price in associated company" id="s3" name="s3" required><br>
                
             
                 </div>
