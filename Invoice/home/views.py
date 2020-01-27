@@ -179,6 +179,7 @@ def GeneratePdf(request):
                 inv['units'] = 1
                 inv['service'] = 'Sewage Water Removal '
             tot_price =  tot + tot_price
+            
             flag  = False
             for i in range (len(inv_print)):
                 if inv_print[i]['site_id'] == inv['site_id'] and inv_print[i]['service'] == inv['service']:
@@ -187,10 +188,13 @@ def GeneratePdf(request):
                     inv_print[i]['units'] = int(inv_print[i]['units'])  +  int(inv['units'])
             if flag == False:
                 inv_print.append(inv)
-            inv = {}           
+            inv = {}  
+        for inv in inv_print:
+            inv['sum'] = round(inv['sum'],2)         
         company_data  = Company.objects.get(id=invoice.company_id)
         invoice.total1 = float(invoice.amount) - float(invoice.discount) 
-        invoice.words = num2words(invoice.total1)
+        invoice.total1  = round(invoice.total1 ,2)
+        invoice.words = num2words(invoice.total1).title()
         pdf = render_to_pdf('invoice.html',{ 'invoice':invoice,'sales':inv_print,'invoice1':company_data})
         return HttpResponse(pdf, content_type='application/pdf')           
 def get_invoice(request):   

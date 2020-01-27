@@ -99,6 +99,21 @@ def summary(request):
         if tot['price'] != None and tot['dis']  != None and tot['m'] != None:
             tot['b']=  tot['price']- tot['dis'] - tot['m'] 
         return render(request,'summary1.html',{'amount':amount,'tot':tot})
-
+def add_start(request):
+    if not request.POST :
+        today = datetime.today()
+        today = today.strftime("%Y-%m-%d")
+        company = Company.objects.all()
+        return render(request,'add_start_balance.html',{'company':company,'today':today})
+    else:
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        com_id = post_data['company'][0]
+        amount  = post_data['amount'][0]
+        ob = Company.objects.get(id=com_id)
+        ob.starting_balance = amount
+        ob.save()
+        messages.info(request,'done')
+        return redirect('add_start')
     
     

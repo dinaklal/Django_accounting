@@ -241,7 +241,7 @@ def print_tripsheet(request):
         notes.append(element)
         element = {}
     notes = sorted(notes, key=lambda k: k['trip']) 
-    company.tot_price  = tot_price
+    company.tot_price  = round(tot_price,2)
     company.tot_units = tot_units
     company.tot_trips = tot_trips
     today = get_data['to_date']
@@ -509,7 +509,7 @@ def print_tripsheet_inv (request):
                 element['u_price'] = rate.service2
                 element['trip'] = 1
                 element['service'] = "Sweet Water "
-                element['total_price'] = float(del_note.units) * float(rate.service2)
+                element['total_price'] = round(float(del_note.units) * float(rate.service2),3)
                 element['units'] = del_note.units + ' Trip'
                 tot_trips += 1
                 
@@ -518,7 +518,7 @@ def print_tripsheet_inv (request):
                 element['u_price'] = rate.service1
                 element['trip'] = 0
                 element['service'] = "Sweet Water "
-                element['total_price'] = float(del_note.units) * float(rate.service1)
+                element['total_price'] = round(float(del_note.units) * float(rate.service1),3)
                 tot_price =  element['total_price'] + tot_price
                 element['units'] = del_note.units + ' Gallon'
                 tot_units = tot_units +  int(del_note.units)
@@ -527,7 +527,7 @@ def print_tripsheet_inv (request):
                 element['u_price'] = rate.service3
                 element['trip'] = 1
                 tot_trips += 1
-                element['total_price'] = float(del_note.units) * float(rate.service3)
+                element['total_price'] = round(float(del_note.units) * float(rate.service3),3)
                 tot_price =  element['total_price'] + tot_price
                 element['service'] = "Sewage Water Removal"
                 element['units'] = del_note.units + ' Trip'
@@ -536,7 +536,7 @@ def print_tripsheet_inv (request):
         notes.append(element)
         element = {}
     notes = sorted(notes, key=lambda k: k['trip']) 
-    company.tot_price  = tot_price
+    company.tot_price  = round(tot_price,2)
     company.tot_units = tot_units
     company.tot_trips = tot_trips
         #today = post_data['to_date']

@@ -118,12 +118,22 @@
 									
 									<td >{{inv.unit_price}}</td>
     								<td >{{ inv.units }}</td>
-                    	<td>{{ inv.sum }}</td>
+                    	<td>{{ inv.sum}}</td>
                     
     							</tr>
 							
                  
                   {% endfor %}
+				    {% if invoice.discount != '0' %}
+				     <tr>
+    								<td style = "width:10%;"  class=" no-line"></td>
+    								<td class="no-line"></td>
+                    <td style = "width:20%;"  class="no-line"></td>
+    								<td style = "width:20%;" class="no-line text-center"><strong>Discount</strong></td>
+    								<td style = "width:30%;" class="no-line text-right">{{ invoice.discount }} Qr</td>
+    							</tr>
+                  {% endif %}
+    							
 				  
                   <tr>
     								<td style = "width:10%;" class="thick-line"></td>
@@ -134,21 +144,12 @@
     								<td style = "width:30%;"  class="thick-line text-right">{{invoice.total1 }} Qr</td>
     							</tr>
                
-                   {% if invoice.discount != '0' %}
-				     <tr>
-    								<td style = "width:10%;"  class=" no-line"></td>
-    								<td class="no-line"></td>
-                    <td style = "width:20%;"  class="no-line"></td>
-    								<td style = "width:20%;" class="no-line text-center"><strong>Discount</strong></td>
-    								<td style = "width:30%;" class="no-line text-right">{{ invoice.discount }} Qr</td>
-    							</tr>
-                  {% endif %}
-    							
+                 
 									</table>
 <br>
-									<div align="right" style="padding-right:50px;">
+									<div align="left" style="padding-right:50px;">
     								<h2>
-    								{{ invoice.words }} Dirham</strong>
+    								Total QR: {{ invoice.words }} </strong>
 									</div>
     							
     				

@@ -3,64 +3,24 @@
 {% block Content %}
     
 <script>
-
 function w() {
-swal({   title: "Mughal Invoice",   text: "Company - Site Association Not provided",   type: "warning",  
- showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Add rate for the mentioned site",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Duplicate Company Name",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please use different Company name",   closeOnConfirm: false },
  function(){
-    window.location.href = 'add_rate';});
+    window.location.href = 'add_company';});
 
  
 };
 function s() {
-  if ("{{ inv_id }}" !== " ")
-  {
-   
-swal({   title: "Mughal Invoice",   text: "Delivery Note Edited, This is already invoiced #{{ inv_id }}  ",   type: "success",  
- showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Invoice Again",   closeOnConfirm: false },
+swal({   title: "Mughal Invoice",   text: "Starting Balance  Added",   type: "success",  
+ showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Done",   closeOnConfirm: false },
  function(){
-    window.location.href = 'edit_del3?inv_id={{ inv_id }}';});
-  }
-   else 
-   {
-
-     swal({   title: "Mughal Invoice",   text: "Delivery Note Edited",   type: "success",  
- showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Go to Edit page",   closeOnConfirm: false },
- function(){
-    window.location.href = 'edit_del_note';});
-     
-   }
-
+    window.location.href = 'add_start';});
 
  
 };
-window.onload = function a() { 
-document.getElementById("service").value = "{{ del_note.service }}";
-document.getElementById("site").value = "{{ del_note.site_id }}";
-document.getElementById("sel1").value = "{{ del_note.company_id }}";
-document.getElementById("Input").value = "{{ del_note.units }}";
-document.getElementById("date").value = "{{ del_note.date }}";
-};
-function myFunction(e){
-
-   var e = document.getElementById("service");
-   var sel2=  e.options[e.selectedIndex].value;
-   if (sel2 == 's2')
-   {
-      document.getElementById('Input').value = 1; 
-      document.getElementById('Input').readOnly = true; 
-   }
-   else
-   {
-     document.getElementById('Input').value = ""; 
-      document.getElementById('Input').placeholder = "Enter 1 Incase of Trip"; 
-      document.getElementById('Input').readOnly = false; 
-   }
-};
-
 </script>
   
-
     <style>
 
 
@@ -194,18 +154,19 @@ display:block;
                 <button class="dropdown-btn ">Delivery Note 
     <span class="caret"></span>
   </button>
-  <div class="dropdown-container se">
-              <li><a href="add_de_note">Add Delivery Note</a></li>
-            <li class="active"><a href="edit_del_note">Edit Delivery Note</a></li>
+  <div class="dropdown-container ">
+              <li ><a href="add_de_note">Add Delivery Note</a></li>
+            <li ><a href="edit_del_note">Edit Delivery Note</a></li>
             </div>
      <button class="dropdown-btn ">Accounts&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
     <span class="caret"></span>
   </button>
-  <div class="dropdown-container">  
+  <div class="dropdown-container se">  
   
-           <li><a href="add_money">Add Money   </a></li>       
+           <li ><a href="add_money">Add Money   </a></li>       
            <li><a href="report">Report</a></li>
-          <li ><a href="summary">Account Summary</a></li> <li ><a href="add_start">Add Start Balance</a></li>
+          <li ><a href="summary">Account Summary</a></li> 
+          <li class="active"><a href="add_start">Add Start Balance</a></li>
             
            </div>
             
@@ -213,31 +174,13 @@ display:block;
 
           </ul>
         </div>
-       
-        <div class="col-sm-7 col-sm-offset-3 col-md-9 col-md-offset-2 main" >
-            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Edit Delivery Note  -  ID:{{ del_note.del_note_id }} </b></center>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+            <center>  <b> <h3 class="p-3 mb-2 bg-primary bg-dark ">Add Starting Balance of Company</b></center>
           
           
-
-          <form class="" role="form" action="add_de_note2" method="post">
+          <form class="form-signin" role="form" action="add_start" method="post">
    			 {% csrf_token %}
-<div class ="row">
-<div class="col-sm-3">
-      <input type="text" class="form-control" placeholder="Deliver Note ID"  value= "{{ del_note.del_note_id }}" name="del_id" required><br>
-     </div>
-   
-
-   
-     <div class="col-sm-6 pull-right">   
-     
-     <input type="text" class="form-control" placeholder="Vehicle Number"  value = "{{ del_note.veh_no }}"name="veh_no" required><br>
-         </div>
-       </div>       
-
-           <div class ="row">
-     <div class="col-sm-4">  
-
-<div class="form-group">
+       <div class="form-group">
             <span class="label label-primary">Select Company:</span>
         <select class="form-control" class="form-control" id="sel1" name="company" required>
        
@@ -249,73 +192,44 @@ display:block;
      
            
           </select>
-            </div> 
-
-            </div>
-    
-     <div class="col-sm-4">  
-<div class="form-group">
-            <span class="label label-primary">Select Site:</span>
-        <select class="form-control" class="form-control" id="site"  name="site" required>
-       
-       {% for u in sites  %}
-                
-        <option value="{{ u.id }}">{{ u.name }}
-           </option  >
-        {% endfor %}
-     
-           
-          </select>
-            </div> 
-
-            </div>
-
+            <div> <br>
+            
           
-     <div class="col-sm-4">  
-
-             <div class="form-group">
-            <span class="label label-primary">Select Service:</span>
-        <select class="form-control" class="form-control" onchange="myFunction(event)"  id="service" name="service" required>
-       
-          
-        <option value="s1"> Sweet Water Supply
-           </option  >
-          <option value="s2"> Sewage Water Removal 
-           </option  >
-          </select>
-            </div> 
-
-            </div>
-             </div> <!--- row ends -->
-
-  <div class ="row">
-  
-     <div class="col-sm-8">  
-               <div class="form-group">
-            <span class="label label-primary">Enter Units:</span>
-              <input type="number" class="form-control" placeholder="Enter  1 in case of trip" name="units" id="Input" required><br>
-              </div>
- </div>
-    <div class="col-sm-4">  
-                <div class="form-group">
-            <span class="label label-primary">Date:</span>
-              <input type="date" class="form-control" name="date" id= "date" required><br>
-              </div>
-             
-            </div>
- </div> <!--- row ends -->
-
-<input type = "hidden"   name= "id" value="{{ del_note.id }}"/>
- <button class="btn btn-lg btn-success btn-block" type="submit">Save </button>  
+              <input type="number" step="0.01" class="form-control"  placeholder = "Starting Balance" name="amount" required><br>
+              
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
       </form>
-        
+            </div> </div>
+        <div class='table-responsive'  >
+            <table class='table table-responsive table-bordered' style='background-color:white;'>
+              <thead >
+                <tr>
+                <th>SINO</th>
+                 <th> Company Name</th>
+                  <th>Starting Balance</th>
+                 
 
+                  {% for site in company%}<!-- Site here is company , code part is copied from view_sites-->
+                  <tr>
+                  <td>{{ forloop.counter }} </td>
+                  <td>{{site.name}}</td><td>{{ site.starting_balance}}</td>               
+                  
+              
+                  
+                
+                  </tr>
+                  {% endfor %}
+            </table>
 
+                
           </div>
+
+
+      
         </div>
       </div>
     </div>
-                <script>
+      <script>
 
 /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
 var dropdown = document.getElementsByClassName("dropdown-btn");

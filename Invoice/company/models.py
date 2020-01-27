@@ -6,6 +6,7 @@ class Company(models.Model):
     name = models.CharField(max_length=100,unique=True)
     contact = models.CharField(max_length=100,unique=True)
     address = models.CharField(max_length=500,default=" Company-address")
+    starting_balance = models.FloatField(max_length=20,default=0.00)
 class Rate(models.Model):
     id = models.IntegerField
     company_id = models.IntegerField(default=1)
