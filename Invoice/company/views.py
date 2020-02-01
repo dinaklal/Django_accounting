@@ -330,17 +330,18 @@ def add_de_note2(request):
             ob.units = units 
             try :
                 ob.save()
+                inv_id = Invoice_Details.objects.filter(del_note_id = id)
+                if inv_id:
+                    inv_id = inv_id[0].inv_id
+                else:
+                    inv_id = " "
+                messages.success(request,'done')
+                return render(request,'edit_del_note2.html',{'inv_id':inv_id})
+           
             except:
                 messages.info(request,'duplicate_del')
                 return redirect('edit_del_note')
-            inv_id = Invoice_Details.objects.filter(del_note_id = id)
-            if inv_id:
-                inv_id = inv_id[0].inv_id
-            else:
-                inv_id = " "
-            messages.success(request,'done')
-            return render(request,'edit_del_note2.html',{'inv_id':inv_id})
-           
+            
         else:
             messages.error(request,'duplicate')
             return render(request,'edit_del_note2.html')

@@ -165,13 +165,13 @@ def GeneratePdf(request):
                 inv['sum'] = float(del_note.units) * float(rate.service2)
                 inv['unit_price'] = rate.service2
                 inv['units'] = 1
-                inv['service'] = 'Sweet Water '
+                inv['service'] = 'Sweet Water Trips'
             elif del_note.service == 's1':            
                 tot = float(del_note.units) * float(rate.service1)
                 inv['sum'] = float(del_note.units) * float(rate.service1)
                 inv['unit_price'] = rate.service1
                 inv['units'] = int(del_note.units)
-                inv['service'] = 'Sweet Water '
+                inv['service'] = 'Sweet Water - Gallon'
             else:
                 tot = float(del_note.units) * float(rate.service3)
                 inv['sum'] = float(del_note.units) * float(rate.service3)
@@ -192,9 +192,11 @@ def GeneratePdf(request):
         for inv in inv_print:
             inv['sum'] = round(inv['sum'],2)         
         company_data  = Company.objects.get(id=invoice.company_id)
-        invoice.total1 = float(invoice.amount) - float(invoice.discount) 
-        invoice.total1  = round(invoice.total1 ,2)
+        invoice.total1 = round(float(invoice.amount) - float(invoice.discount),3 )
+       
         invoice.words = num2words(invoice.total1).title()
+        #print(inv_print)
+        invoice.discount = round(float(invoice.discount),3)
         pdf = render_to_pdf('invoice.html',{ 'invoice':invoice,'sales':inv_print,'invoice1':company_data})
         return HttpResponse(pdf, content_type='application/pdf')           
 def get_invoice(request):   
@@ -203,6 +205,7 @@ def get_invoice(request):
         i.inv = "#"+str(i.id)
         i.company = Company.objects.get(id = i.company_id).name
     today=datetime.today()
+    
     today = today.strftime("%Y-%m-%d")
     #print(today)
     return render(request,'view_inv.html',{'invoice':invoice,'date':today})
