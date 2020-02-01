@@ -165,13 +165,13 @@ def GeneratePdf(request):
                 inv['sum'] = float(del_note.units) * float(rate.service2)
                 inv['unit_price'] = rate.service2
                 inv['units'] = 1
-                inv['service'] = 'Sweet Water Trips'
+                inv['service'] = 'Sweet Water'
             elif del_note.service == 's1':            
                 tot = float(del_note.units) * float(rate.service1)
                 inv['sum'] = float(del_note.units) * float(rate.service1)
                 inv['unit_price'] = rate.service1
                 inv['units'] = int(del_note.units)
-                inv['service'] = 'Sweet Water - Gallon'
+                inv['service'] = 'Sweet_Water'
             else:
                 tot = float(del_note.units) * float(rate.service3)
                 inv['sum'] = float(del_note.units) * float(rate.service3)
