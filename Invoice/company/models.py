@@ -16,7 +16,7 @@ class Rate(models.Model):
     service3 = models.CharField(max_length=100)
 class DelNote(models.Model):
     id = models.IntegerField
-    del_note_id = models.IntegerField(default=1)
+    del_note_id = models.CharField(max_length=200,unique=True)
     company_id = models.IntegerField(default=1)
     site_id = models.IntegerField(default=1)
     service = models.CharField(max_length=100)

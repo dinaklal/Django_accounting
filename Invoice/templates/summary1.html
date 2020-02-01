@@ -209,15 +209,24 @@ display:block;
               <thead >
                 <tr>
                  <th> SINO</th>
-                  <th >Amount Given</th>
+                 <th >Type </th>
+                  <th >Description </th>
+                   <th >Amount </th>
+
                   <th >Date</th>
-              
-                  
+                  <th >Updated Balance </th>
+                 
+                
 
                   {% for inv in amount %}
                   <tr>
-                  <td>{{ forloop.counter }}</td><td>{{ inv.amount }}</td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ inv.type }}</td>
+                  <td>{{ inv.Description }}</td>
+                  <td>{{ inv.amount }}</td>
+
                   <td>{{ inv.date }}</td>
+                  <td>{{ inv.total_amount }}</td>
            
                  
                   </tr>

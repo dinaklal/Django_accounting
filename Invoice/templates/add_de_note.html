@@ -12,6 +12,17 @@ swal({   title: "Mughal Invoice",   text: "Company - Site Association Not provid
 
  
 };
+
+function x() {
+swal({   title: "Mughal Invoice",   text: "Delivery Note ID aready added",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Use different Delivery Note ID",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_de_note';});
+
+ 
+};
+
+
 function s() {
 swal({   title: "Mughal Invoice",   text: "Delivery Note Added",   type: "success",  
  showCancelButton: false,   confirmButtonColor: "#00ff7f",   confirmButtonText: "Add Again",   closeOnConfirm: false },
@@ -203,7 +214,7 @@ display:block;
    			 {% csrf_token %}
 <div class ="row">
 <div class="col-sm-3">
-      <input type="number" class="form-control" placeholder="Deliver Note ID" name="del_id" required><br>
+      <input type="text" class="form-control" placeholder="Deliver Note ID" name="del_id" required><br>
      </div>
    
 
@@ -319,7 +330,12 @@ for (i = 0; i < dropdown.length; i++) {
      <body onload=w()>
 
      {% endif %}
-       {% if message.tags == "info" %} 
+
+     {% if message.tags == "info" %} 
+     <body onload=x()>
+     
+     {% endif %}
+       {% if message.tags == "success" %} 
      <body onload=s()>
      
      {% endif %}

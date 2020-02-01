@@ -10,6 +10,10 @@
 <title>Mughal Invoice</title>
 <style >
 
+body{
+
+	font-size: 13px;
+}
 #td_inner td
 {
 	text-align:center;
@@ -43,9 +47,7 @@
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
+
 
 <hr>
 <center><h1>Invoice </h1></center>
@@ -72,12 +74,12 @@
 
     		</table>
     			<div class="b">
-    				<address>
-    				<strong>Billed To:</strong><br>
-    					<h3>{{invoice1.name	}} </h3>						
-    					{{invoice1.address}}<br>    				
+    			
+    				Billed To:
+    					<div class = 't' style="font-size:35px"><b> {{invoice1.name	}} 	</b></style>	</div>				
+    					<br>{{invoice1.address}}<br>    				
     					Contact:{{invoice1.contact}}
-    				</address>
+    			
     			</div>
     			
 				
@@ -91,7 +93,7 @@
     		
     			<div class="panel-body">
     				<div class="table-responsive">
-    					<table  class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:10px;'  >
+    					<table  class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:8px;'  >
     						<thead style="text-align:center;">
                                 <tr class="heading">
         							<td style = "width:20px;" class="text-center"><strong>SINO</strong></td>
@@ -112,7 +114,7 @@
 								
                     <td style = "width:20px;" >{{ forloop.counter }}</td>  								
     								
-    								<td >{{ inv.service  }}<br>
+    								<td >{{ inv.service  }} - 
 									{{inv.site}}
 									</td>
 									
@@ -155,8 +157,8 @@
     				
 						
 <br>
-						Receiver Signature: ................................................................................................................
-						Signature: .........................................................................................
+						Receiver Signature: ..........................................................
+						Signature: ...................................................................
     				</div>
     			</div>
     		</div>

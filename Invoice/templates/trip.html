@@ -14,16 +14,36 @@
 {
 	text-align:center;
 }
+body{
+
+	font-size: 13px;
+}
 
 </style>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 
 
 
     <div class="row">
         <div class="col-xs-12">
 					 <td class="title">
-                                <img src="/home/lals/Desktop/accounting/Invoice/assets/images/logo.png" style="max-width:50px;">
-                            </td>
+                           </td>
 							<br>
 
 							<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
@@ -39,7 +59,8 @@
   
         <h1><b> Trip Sheet for Invoice  #{{ company.inv_id }} </h1>
       {% endif %}
-      <h1>{{ company.name }}</h1> 
+      <div class = 't' style="font-size:35px"><b> {{company.name	}} 	</b></style>	</div>				
+    					
         
         Address : {{ company.address }}
         <br>

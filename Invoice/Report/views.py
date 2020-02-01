@@ -66,7 +66,8 @@ def summary(request):
                 total_price = invoice.aggregate(Sum('amount'))['amount__sum'] - invoice.aggregate(Sum('discount'))['discount__sum']
             else: 
                 total_price = 0
-            com.tot = total_price            
+            com.tot =  total_price  + com.starting_balance
+                 
             money = Account.objects.filter(from_company = com.id)
             if money.count() > 0:
                 total_price = money.aggregate(Sum('amount'))['amount__sum']
@@ -89,16 +90,73 @@ def summary(request):
     else:
         comp_id = request.GET['company_id']
         tot ={}
-        tot['name'] = Company.objects.get(id = comp_id).name
-        amount = Account.objects.filter(from_company = comp_id)
-        invoice = Invoice.objects.filter(company_id = comp_id)       
+        company = Company.objects.get(id = comp_id)
+        tot['name'] = company.name
+        amount = Account.objects.filter(from_company = comp_id).order_by('date')
+        invoice = Invoice.objects.filter(company_id = comp_id).order_by('date') 
+        i=0
+        j=0 
+        c=[]
+        ele ={}
+        tot_it = company.starting_balance
+        ele['type'] = 'Debit'
+        ele['Description'] = 'Starting Balance'
+        ele['amount'] = company.starting_balance
+        ele['total_amount'] = company.starting_balance
+        c.append(ele)
+        while i < amount.count() and j <  invoice.count():
+            if amount[i].date < invoice[j].date:
+                ele ={}
+                ele['type'] = 'Credit'
+                ele['Description'] = 'Amount from Company'
+                ele['amount'] = amount[i].amount
+                tot_it = round(float(tot_it) - float(amount[i].amount),5)
+                ele['total_amount'] = tot_it 
+                ele['date'] = amount[i].date
+                c.append(ele)
+                i = i+1
+            else:
+                ele ={}
+                ele['type'] = 'Debit'
+                ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
+                ele['amount'] = invoice[j].amount
+                tot_it = round(float(tot_it) + float(invoice[j].amount)  - float(invoice[j].discount),5)
+                ele['total_amount'] = tot_it 
+                ele['date'] = invoice[j].date
+                c.append(ele)
+                j=j+1
+        while i <  amount.count():
+            ele ={}
+            ele['type'] = 'Credit'
+            ele['Description'] = 'Amount from Company'
+            ele['amount'] = amount[i].amount
+            tot_it = round(float(tot_it) - float(amount[i].amount),5)
+            ele['total_amount'] = tot_it 
+            ele['date'] = amount[i].date
+            c.append(ele)
+            i = i+1
+        while j <  invoice.count():
+            ele ={}
+            ele['type'] = 'Debit'
+            ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
+            ele['amount'] = invoice[j].amount
+            tot_it = round (float(tot_it) + float(invoice[j].amount) - float(invoice[j].discount),5)
+            ele['total_amount'] = tot_it 
+            ele['date'] = invoice[j].date
+            c.append(ele)
+            j = j+1
+        
+
+
+        print(c)
         tot['price']= invoice.aggregate(Sum('amount'))['amount__sum'] 
+        tot['start_price'] = company.starting_balance
         tot['in']= invoice.count()
         tot['dis'] = invoice.aggregate(Sum('discount'))['discount__sum'] 
         tot['m'] = amount.aggregate(Sum('amount'))['amount__sum'] 
         if tot['price'] != None and tot['dis']  != None and tot['m'] != None:
-            tot['b']=  tot['price']- tot['dis'] - tot['m'] 
-        return render(request,'summary1.html',{'amount':amount,'tot':tot})
+            tot['b']= round( tot['price']- tot['dis'] - tot['m'] +  company.starting_balance,5)
+        return render(request,'summary1.html',{'amount':c,'tot':tot,'company':company})
 def add_start(request):
     if not request.POST :
         today = datetime.today()

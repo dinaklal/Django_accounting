@@ -12,6 +12,16 @@ swal({   title: "{{ name }}",   text: "You are not Logged In!!!",   type: "warni
 
  
 };
+
+function x() {
+swal({   title: "Mughal Invoice",   text: "Delivery Note ID aready added",   type: "warning",  
+ showCancelButton: false,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Please Use different Delivery Note ID",   closeOnConfirm: false },
+ function(){
+    window.location.href = 'add_de_note';});
+
+ 
+};
+
 </script>
 {% if user.is_authenticated %}
 
@@ -270,5 +280,15 @@ for (i = 0; i < dropdown.length; i++) {
 
  <body onLoad="w()">
  {% endif %}
+
+   {% for message in messages %}
+   
+  
+     {% if message.tags == "info" %} 
+     <body onload=x()>
+     
+     {% endif %}
+   
+{% endfor %}
 
  {% endblock %}

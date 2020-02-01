@@ -32,15 +32,19 @@ def add_de_note(request):
         company = request.POST['company']
         site = request.POST['site']
         del_id = request.POST['del_id']
+
         veh_no = request.POST['veh_no']
         service = request.POST['service']
         units = request.POST['units']
         date = request.POST['date']
-        if Rate.objects.filter(company_id=company,site_id = site ).exists():
+        if DelNote.objects.filter(del_note_id = del_id).exists():
+            messages.info(request,'duplicate_del')
+            return redirect('add_de_note')
+        elif Rate.objects.filter(company_id=company,site_id = site ).exists():
            
             ob=DelNote(del_note_id = del_id, veh_no = veh_no,company_id=company,site_id = site, date = date, service = service,units = units ,invoiced = False)
             ob.save()
-            messages.info(request,'done')
+            messages.success(request,'done')
             return redirect('add_de_note')
            
         else:
@@ -313,6 +317,7 @@ def add_de_note2(request):
         service = request.POST['service']
         units = request.POST['units']
         date = request.POST['date']
+        
         if Rate.objects.filter(company_id=company,site_id = site ).exists():
            
             ob=DelNote.objects.get(id = id)
@@ -323,13 +328,17 @@ def add_de_note2(request):
             ob.date = date
             ob.service = service
             ob.units = units 
-            ob.save()
+            try :
+                ob.save()
+            except:
+                messages.info(request,'duplicate_del')
+                return redirect('edit_del_note')
             inv_id = Invoice_Details.objects.filter(del_note_id = id)
             if inv_id:
                 inv_id = inv_id[0].inv_id
             else:
                 inv_id = " "
-            messages.info(request,'done')
+            messages.success(request,'done')
             return render(request,'edit_del_note2.html',{'inv_id':inv_id})
            
         else:
