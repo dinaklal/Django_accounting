@@ -43,10 +43,6 @@ body{
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
 
 
 <hr>
@@ -76,8 +72,8 @@ body{
     			<div class="b">
     			
     				Billed To:
-    					<div class = 't' style="font-size:35px"><b> {{invoice1.name	}} 	</b></style>	</div>				
-    					<br>{{invoice1.address}}<br>    				
+    					<div class = 't' style="font-size:17px"><b> {{invoice1.name	}} 	</b></style>	</div>				
+    					{{invoice1.address}}<br>    				
     					Contact:{{invoice1.contact}}
     			
     			</div>
@@ -100,7 +96,7 @@ body{
         							<td class="text-center" width="70%"><strong>Description</strong></td>
         							<td class="text-right " ><strong>Unit Rate</strong></td>
         							<td class="text-right"><strong>Total Units</strong></td>
-                      <td class="text-right"><strong>Total price</strong></td>
+                      <td ><strong>Total price</strong></td>
                                 </tr>
     						</thead>
     					<tbody id = "td_inner">
@@ -120,7 +116,7 @@ body{
 									
 									<td >{{inv.unit_price}}</td>
     								<td >{{ inv.units }}</td>
-                    	<td>{{ inv.sum}}</td>
+                    	<td style="text-align:right">{{ inv.sum}}&nbsp</td>
                     
     							</tr>
 							
@@ -132,7 +128,7 @@ body{
     								<td class="no-line"></td>
                     <td style = "width:20%;"  class="no-line"></td>
     								<td style = "width:20%;" class="no-line text-center"><strong>Discount</strong></td>
-    								<td style = "width:30%;" class="no-line text-right">{{ invoice.discount }} </td>
+    								<td style = "width:30%;text-align:right;" class="no-line text-right">{{ invoice.discount }}&nbsp </td>
     							</tr>
                   {% endif %}
     							
@@ -143,7 +139,7 @@ body{
 										<td class="thick-line"></td>
                     	<td style = "width:20%;" class="thick-line"></td>
     								<td style = "width:20%;" class="thick-line text-center"><strong>Grand Total</strong></td>
-    								<td style = "width:30%;"  class="thick-line text-right">{{invoice.total1 }} </td>
+    								<td style = "width:30%;text-align:right;"  class="thick-line text-right">{{invoice.total1 }}&nbsp </td>
     							</tr>
                
                  

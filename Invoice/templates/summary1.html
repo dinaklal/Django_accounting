@@ -173,7 +173,7 @@ display:block;
            <li ><a href="add_money">Add Money   </a></li>       
            <li ><a href="report">Report</a></li>
           <li class="active"><a href="summary">Account Summary</a></li>
-            
+             <li><a href="add_start">Add Start Balance</a></li>
            </div>
             
 		
@@ -187,50 +187,82 @@ display:block;
   <div class="col-sm-12  col-md-10 col-md-offset-2 main">
            
           
- <div class="row" >
-         
+ <div class="row" >         
        <h3 class="p-3 mb-2 bg-primary bg-dark ">Summary of Accounts - {{ tot.name }}</h3>
 <div class="well">
  
-        <br>
         Total Invoices : {{ tot.in }}
         <br>
         Total Price : {{ tot.price }}
-        <br>
-        Total Discount Given : {{ tot.dis }}
+       
         <br>
         Total Amount Retrieved : {{ tot.m }}
         <br>
         Balance: {{ tot.b }}
 </div>
 
+   <div class="row" >
+         <form  role="form" action="print_account" method="post" target="_blank">
+   			 {% csrf_token %}
+         <div class="col-md-3 col-md-offset-2" >
+            <div class="form-group">
+            <span class="label label-primary">Account From Date</span>
+            <input type="date" name='date' value ={{ date }} class="form-control" >
+            <input type="hidden" name='company' value="{{ company.id }}">
+            </div>
+         </div>
+  
+           <div class="col-md-2" >
+        <button class="btn btn-lg btn-success btn-block pull-right" type="submit">Print</button>
+         </form>
+        </div>
+         </div>
+
 <div class='table-responsive'  >
             <table class='table table-responsive table-bordered' style='background-color:white;'>
               <thead >
                 <tr>
                  <th> SINO</th>
-                 <th >Type </th>
+                 <th >Date </th>
                   <th >Description </th>
-                   <th >Amount </th>
-
-                  <th >Date</th>
-                  <th >Updated Balance </th>
+                   <th >Debit  </th>
+                  <th >Credit  </th>
+                 
                  
                 
 
                   {% for inv in amount %}
                   <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ inv.type }}</td>
-                  <td>{{ inv.Description }}</td>
-                  <td>{{ inv.amount }}</td>
-
                   <td>{{ inv.date }}</td>
-                  <td>{{ inv.total_amount }}</td>
-           
-                 
+                  <td>{{ inv.Description }}</td>
+                  {% if  inv.type == 'Debit'%}              
+                  
+                  <td>{{ inv.amount }}</td><td></td>
+
+                  {% else %}
+                  <td></td><td>{{ inv.amount }}</td>
+                  {% endif %}                
+          
                   </tr>
                   {% endfor %}
+
+                  <tr> 
+                  <td></td>
+                  <td></td>
+                 
+                  <td><b>Total</b></td>
+                  <td>{{ tot.tot_deb}} </td>
+                  <td>{{ tot.tot_cred}} </td>
+                  </tr>
+                  <tr> 
+                  <td></td>
+                  <td></td>
+                 
+                  <td><b>Balance</b></td>
+                  <td> </td>
+                  <td><b>{{ tot.tot_bal}} </b></td>
+                  </tr>
             </table>
             </div>
 </div>

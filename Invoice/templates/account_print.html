@@ -1,0 +1,111 @@
+
+  <html>   
+
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/jquery.min.js"></script> 
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/bootstrap.min.js"></script>
+    <script src="/home/lals/Desktop/accounting/Invoice/assets/js/docs.min.js"></script>
+	<link href="/home/lals/Desktop/accounting/Invoice/assets/css/bootstrap.min.css" rel="stylesheet">
+<div class="row col-md-12 container" id="invoice" style="background-color:white">
+
+<title>Mughal Account Summary</title>
+<style >
+
+#td_inner td
+{
+	text-align:center;
+}
+body{
+
+	font-size: 13px;
+}
+
+</style>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+    <div class="row">
+        <div class="col-xs-12">
+					 <td class="title">
+                           </td>
+							<br>
+
+							<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+    
+           <div class="well">
+
+         
+        <h1><b> Account Summary From  {{ date }}</h1>
+      
+      <div class = 't' style="font-size:17px"><b> {{company.name	}} 	</b></style>	</div>				
+    					
+        
+        Address : {{ company.address }}
+        <br>
+        Contact : {{ company.contact }}
+        <br>
+</b>
+</div>
+           <br>
+            <div class='table-responsive'  >
+            <table class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:10px;'>
+              <thead >
+                <tr>
+                     <th style = "width:20%;"  > SINO</th>
+                 <th >Date </th>
+                  <th >Description </th>
+                   <th >Debit  </th>
+                  <th >Credit  </th>
+              
+<tbody id = "td_inner">
+                   {% for inv in amount %}
+                  <tr>
+                  <td  style = "width:20%;" >{{ forloop.counter }}</td>
+                  <td>{{ inv.date }}</td>
+                  <td>{{ inv.Description }}</td>
+                  {% if  inv.type == 'Debit'%}              
+                  
+                  <td>{{ inv.amount }}</td><td></td>
+
+                  {% else %}
+                  <td></td><td>{{ inv.amount }}</td>
+                  {% endif %}                
+          
+                  </tr>
+                  {% endfor %}
+
+                  <tr> 
+                  <td style = "width:20%;" ></td>
+                  <td></td>
+                 
+                  <td><b>Total</b></td>
+                  <td>{{ tot.tot_deb}} </td>
+                  <td>{{ tot.tot_cred}} </td>
+                  </tr>
+                  <tr> 
+                  <td style = "width:10%;" ></td>
+                  <td style = "width:25%;"></td>
+                 
+                  <td ><b>Balance</b></td>
+                  <td> </td>
+                  <td><b>{{ tot.tot_bal}} </b></td>
+                  </tr>
+				  </tbody>
+            </table>
+
+                
+    </div>
+
+
+
+</div>
+<html>

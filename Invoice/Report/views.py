@@ -104,6 +104,8 @@ def summary(request):
         ele['amount'] = company.starting_balance
         ele['total_amount'] = company.starting_balance
         c.append(ele)
+        tot_cre = 0.0
+        tot_deb = float(company.starting_balance)
         while i < amount.count() and j <  invoice.count():
             if amount[i].date < invoice[j].date:
                 ele ={}
@@ -111,6 +113,7 @@ def summary(request):
                 ele['Description'] = 'Amount from Company'
                 ele['amount'] = amount[i].amount
                 tot_it = round(float(tot_it) - float(amount[i].amount),5)
+                tot_cre = tot_cre + float(amount[i].amount)
                 ele['total_amount'] = tot_it 
                 ele['date'] = amount[i].date
                 c.append(ele)
@@ -120,6 +123,7 @@ def summary(request):
                 ele['type'] = 'Debit'
                 ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
                 ele['amount'] = invoice[j].amount
+                tot_deb = tot_deb + float(invoice[j].amount)
                 tot_it = round(float(tot_it) + float(invoice[j].amount)  - float(invoice[j].discount),5)
                 ele['total_amount'] = tot_it 
                 ele['date'] = invoice[j].date
@@ -130,6 +134,7 @@ def summary(request):
             ele['type'] = 'Credit'
             ele['Description'] = 'Amount from Company'
             ele['amount'] = amount[i].amount
+            tot_cre = tot_cre + float(amount[i].amount)
             tot_it = round(float(tot_it) - float(amount[i].amount),5)
             ele['total_amount'] = tot_it 
             ele['date'] = amount[i].date
@@ -140,6 +145,7 @@ def summary(request):
             ele['type'] = 'Debit'
             ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
             ele['amount'] = invoice[j].amount
+            tot_deb = tot_deb + float(invoice[j].amount)
             tot_it = round (float(tot_it) + float(invoice[j].amount) - float(invoice[j].discount),5)
             ele['total_amount'] = tot_it 
             ele['date'] = invoice[j].date
@@ -148,7 +154,15 @@ def summary(request):
         
 
 
-        print(c)
+        #print(tot)
+        if len(c) > 1 :
+            t = c[1]['date'].strftime("%Y-%m-%d")
+        else:
+            t = datetime(2020, 1, 1).strftime("%Y-%m-%d")
+        tot['tot_cred'] = round(float(tot_cre),5)
+        tot['tot_deb'] = round(float(tot_deb),5)
+        tot['tot_bal'] = tot['tot_deb'] - tot['tot_cred'] 
+        print(tot)
         tot['price']= invoice.aggregate(Sum('amount'))['amount__sum'] 
         tot['start_price'] = company.starting_balance
         tot['in']= invoice.count()
@@ -156,7 +170,7 @@ def summary(request):
         tot['m'] = amount.aggregate(Sum('amount'))['amount__sum'] 
         if tot['price'] != None and tot['dis']  != None and tot['m'] != None:
             tot['b']= round( tot['price']- tot['dis'] - tot['m'] +  company.starting_balance,5)
-        return render(request,'summary1.html',{'amount':c,'tot':tot,'company':company})
+        return render(request,'summary1.html',{'amount':c,'tot':tot,'company':company,'date':t})
 def add_start(request):
     if not request.POST :
         today = datetime.today()
@@ -174,4 +188,104 @@ def add_start(request):
         messages.info(request,'done')
         return redirect('add_start')
     
-    
+def print_account(request):
+    post_data = dict(request.POST.lists())
+    post_data.pop('csrfmiddlewaretoken',None)
+    date = post_data['date'][0]
+    comp_id  = post_data['company'][0]
+    tot ={}
+    company = Company.objects.get(id = comp_id)
+    tot['name'] = company.name
+    amount = Account.objects.filter(from_company = comp_id).order_by('date')
+    invoice = Invoice.objects.filter(company_id = comp_id).order_by('date') 
+    i=0
+    j=0 
+    c=[]
+    f = []
+    ele ={}
+    tot_it = company.starting_balance
+    ele['type'] = 'Debit'
+    ele['Description'] = 'Starting Balance'
+    ele['amount'] = company.starting_balance
+    ele['total_amount'] = company.starting_balance
+    c.append(ele)
+    f.append(ele)
+    tot_cre = 0.0
+    tot_deb = float(company.starting_balance)
+    while i < amount.count() and j <  invoice.count():
+        if amount[i].date < invoice[j].date:
+            
+            ele ={}
+            ele['type'] = 'Credit'
+            ele['Description'] = 'Amount from Company'
+            ele['amount'] = amount[i].amount
+            tot_it = round(float(tot_it) - float(amount[i].amount),5)
+            tot_cre = tot_cre + float(amount[i].amount)
+            ele['total_amount'] = tot_it 
+            ele['date'] = amount[i].date
+            c.append(ele)
+            i = i+1
+        else:
+            ele ={}
+            ele['type'] = 'Debit'
+            ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
+            ele['amount'] = invoice[j].amount
+            tot_deb = tot_deb + float(invoice[j].amount)
+            tot_it = round(float(tot_it) + float(invoice[j].amount)  - float(invoice[j].discount),5)
+            ele['total_amount'] = tot_it 
+            ele['date'] = invoice[j].date
+            c.append(ele)
+            j=j+1
+    while i <  amount.count():
+        ele ={}
+        ele['type'] = 'Credit'
+        ele['Description'] = 'Amount from Company'
+        ele['amount'] = amount[i].amount
+        tot_cre = tot_cre + float(amount[i].amount)
+        tot_it = round(float(tot_it) - float(amount[i].amount),5)
+        ele['total_amount'] = tot_it 
+        ele['date'] = amount[i].date
+        c.append(ele)
+        i = i+1
+    while j <  invoice.count():
+        ele ={}
+        ele['type'] = 'Debit'
+        ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
+        ele['amount'] = invoice[j].amount
+        tot_deb = tot_deb + float(invoice[j].amount)
+        tot_it = round (float(tot_it) + float(invoice[j].amount) - float(invoice[j].discount),5)
+        ele['total_amount'] = tot_it 
+        ele['date'] = invoice[j].date
+        c.append(ele)
+        j = j+1
+
+    tot_cre = 0.0
+    tot_deb = float(f[0]['amount'])
+    for i in range(1,len(c)):
+        if c[i]['date'] < datetime.strptime(date, '%Y-%m-%d').date() :            
+            if c[i]['type'] == 'Debit':
+                f[0]['amount'] = float(f[0]['amount']) + float(c[i]['amount'])
+            else:
+                f[0]['amount'] = float(f[0]['amount']) - float(c[i]['amount'])
+            tot_deb = float(f[0]['amount'])
+        else:
+            f.append(c[i])
+            if c[i]['type'] == 'Debit':
+                tot_deb = tot_deb + float(c[i]['amount'])
+            else:
+                tot_cre = tot_cre + float(c[i]['amount'])
+
+    #print(c)
+    tot['tot_cred'] = round(float(tot_cre),5)
+    tot['tot_deb'] = round(float(tot_deb),5)
+    tot['tot_bal'] = tot['tot_deb'] - tot['tot_cred'] 
+  
+    tot['price']= invoice.aggregate(Sum('amount'))['amount__sum'] 
+    tot['start_price'] = company.starting_balance
+    tot['in']= invoice.count()
+    tot['dis'] = invoice.aggregate(Sum('discount'))['discount__sum'] 
+    tot['m'] = amount.aggregate(Sum('amount'))['amount__sum'] 
+    if tot['price'] != None and tot['dis']  != None and tot['m'] != None:
+        tot['b']= round( tot['price']- tot['dis'] - tot['m'] +  company.starting_balance,5)
+    pdf = render_to_pdf('account_print.html',{ 'date':date, 'tot':tot,'amount':f,'company':company})
+    return HttpResponse(pdf, content_type='application/pdf') 
