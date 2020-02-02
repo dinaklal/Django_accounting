@@ -74,10 +74,10 @@ body{
                   <td>{{ inv.Description }}</td>
                   {% if  inv.type == 'Debit'%}              
                   
-                  <td>{{ inv.amount }}</td><td></td>
+                  <td style="text-align:right">{{ inv.amount }}&nbsp</td><td></td>
 
                   {% else %}
-                  <td></td><td>{{ inv.amount }}</td>
+                  <td></td><td style="text-align:right">{{ inv.amount }}&nbsp</td>
                   {% endif %}                
           
                   </tr>
@@ -88,8 +88,8 @@ body{
                   <td></td>
                  
                   <td><b>Total</b></td>
-                  <td>{{ tot.tot_deb}} </td>
-                  <td>{{ tot.tot_cred}} </td>
+                  <td style="text-align:right">{{ tot.tot_deb}}&nbsp </td>
+                  <td style="text-align:right">{{ tot.tot_cred}}&nbsp </td>
                   </tr>
                   <tr> 
                   <td style = "width:10%;" ></td>
@@ -97,7 +97,7 @@ body{
                  
                   <td ><b>Balance</b></td>
                   <td> </td>
-                  <td><b>{{ tot.tot_bal}} </b></td>
+                  <td style="text-align:right"><b>{{ tot.tot_bal}}&nbsp </b></td>
                   </tr>
 				  </tbody>
             </table>
