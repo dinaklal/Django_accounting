@@ -233,14 +233,14 @@ display:block;
        </div>
 
        <div class="row">
-           <div  class="col-sm-2">
+           <div  class="col-sm-1">
       <a href='/'> <button class="btn btn-lg btn-warning  " type="submit">Back </button></a>
        </div>
 
-       <div  class="col-sm-2">
+       <div  class="col-sm-1">
 
        </div>
- <div  class="col-sm-3">
+ 
          <form  role="form" action="process" method="post">
    			     {% csrf_token %}
               <input type="hidden" name="from_date"  value="{{ company.from_date }}" />
@@ -249,15 +249,23 @@ display:block;
               <input type="hidden" name="site"  value="{{ company.site }}" />
               <input type="hidden" name="company"  value="{{ company.id }}" />
              
+      
+        <div  class="col-sm-3">     
+            <div class="form-group input-group ">
+            <span class="label label-primary">Invoice Date</span>
+              <input type="date" class="form-control" name="inv_date"   value ="{{ today }}"  required><br>
+                </div>
+              </div>
+                <div  class="col-sm-3">     
               <div class="form-group input-group">
             <span class="label label-primary">Add Discount If any:</span>
               <input type="number" class="form-control" name="discount"   value ="0"  required><br>
                 </div>
+              
 
-     
-       </div>
-
-        <div  class="col-sm-2">
+    
+</div>  
+        <div  class="col-sm-1">
         
               
        <button class="btn btn-lg btn-success  " type="submit">Create Invoice </button>

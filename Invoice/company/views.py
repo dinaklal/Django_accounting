@@ -121,6 +121,7 @@ def trip_sheet(request):
     tot_trips = 0
     tot_units = 0
     tot_price = 0
+    del_notes = del_notes.order_by('date')
     for del_note in del_notes:
         element['id']= del_note.id
         i = i+1
@@ -161,7 +162,7 @@ def trip_sheet(request):
         element['date'] = del_note.date
         notes.append(element)
         element = {}
-    notes = sorted(notes, key=lambda k: k['trip']) 
+    #notes = sorted(notes, key=lambda k: k['trip']) 
     company.tot_price  = tot_price
     company.tot_units = tot_units
     company.tot_trips = tot_trips
@@ -204,6 +205,7 @@ def print_tripsheet(request):
     tot_trips = 0
     tot_units = 0
     tot_price = 0
+    del_notes = del_notes.order_by('date')
     for del_note in del_notes:
         element['id']= del_note.id
         i = i+1
@@ -237,14 +239,14 @@ def print_tripsheet(request):
             tot_trips += 1
             element['total_price'] = float(del_note.units) * float(rate.service3)
             tot_price =  element['total_price'] + tot_price
-            element['service'] = "Sewage Water Removal"
+            element['service'] = "Sewage Water"
             element['units'] = del_note.units + ' Trip'
         element['veh_no'] = del_note.veh_no
      
         element['date'] = del_note.date
         notes.append(element)
         element = {}
-    notes = sorted(notes, key=lambda k: k['trip']) 
+    #notes = sorted(notes, key=lambda k: k['trip']) 
     company.tot_price  = round(tot_price,2)
     company.tot_units = tot_units
     company.tot_trips = tot_trips
@@ -351,6 +353,7 @@ def edit_del3(request):
         post_data = dict(request.POST.lists())
         post_data.pop('csrfmiddlewaretoken',None)
         inv_id = request.POST['inv_id']
+        inv_date = request.POST['inv_date']
         discount = request.POST['discount']
         del_notes = DelNote.objects.filter(inv_id=inv_id)
         invoice = Invoice.objects.get(id=inv_id)
@@ -359,7 +362,7 @@ def edit_del3(request):
         today=datetime.today()
         today = today.strftime("%Y-%m-%d")
 
-        invoice.date = today
+        invoice.date = inv_date
         invoice.save()
 
         if len(del_notes) == 0 :
@@ -490,7 +493,7 @@ def edit_del3(request):
         rates = Rate.objects.all()
         today=datetime.today()
         today = today.strftime("%Y-%m-%d")
-        return render(request,'trip_sheet2.html',{'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes,'discount':invoice.discount})
+        return render(request,'trip_sheet2.html',{'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes,'discount':invoice.discount,'date':invoice.date.strftime("%Y-%m-%d")})
 
 def print_tripsheet_inv (request):
     get_data = dict(request.GET.lists())
@@ -539,7 +542,7 @@ def print_tripsheet_inv (request):
                 tot_trips += 1
                 element['total_price'] = round(float(del_note.units) * float(rate.service3),3)
                 tot_price =  element['total_price'] + tot_price
-                element['service'] = "Sewage Water Removal"
+                element['service'] = "Sewage Water"
                 element['units'] = del_note.units + ' Trip'
         element['veh_no'] = del_note.veh_no
         element['date'] = del_note.date

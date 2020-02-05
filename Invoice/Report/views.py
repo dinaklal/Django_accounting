@@ -50,7 +50,8 @@ def add_money(request):
         date = post_data['date'][0]
         com_id = post_data['company'][0]
         amount  = post_data['amount'][0]
-        ob = Account(from_company = com_id,amount = amount,date =date)
+        desc  = post_data['desc'][0]
+        ob = Account(from_company = com_id,amount = amount,date =date,description=desc)
         ob.save()
         messages.info(request,'done')
         return redirect('add_money')
@@ -110,7 +111,7 @@ def summary(request):
             if amount[i].date < invoice[j].date:
                 ele ={}
                 ele['type'] = 'Credit'
-                ele['Description'] = 'Amount from Company'
+                ele['Description'] = 'From Company - '+str(amount[i].description)
                 ele['amount'] = amount[i].amount
                 tot_it = round(float(tot_it) - float(amount[i].amount),5)
                 tot_cre = tot_cre + float(amount[i].amount)
@@ -132,7 +133,7 @@ def summary(request):
         while i <  amount.count():
             ele ={}
             ele['type'] = 'Credit'
-            ele['Description'] = 'Amount from Company'
+            ele['Description'] = 'From Company - '+str(amount[i].description)
             ele['amount'] = amount[i].amount
             tot_cre = tot_cre + float(amount[i].amount)
             tot_it = round(float(tot_it) - float(amount[i].amount),5)
@@ -217,7 +218,7 @@ def print_account(request):
             
             ele ={}
             ele['type'] = 'Credit'
-            ele['Description'] = 'Amount from Company'
+            ele['Description'] = 'From Company - ' + str(amount[i].description)
             ele['amount'] = amount[i].amount
             tot_it = round(float(tot_it) - float(amount[i].amount),5)
             tot_cre = tot_cre + float(amount[i].amount)
@@ -239,7 +240,7 @@ def print_account(request):
     while i <  amount.count():
         ele ={}
         ele['type'] = 'Credit'
-        ele['Description'] = 'Amount from Company'
+        ele['Description'] = 'From Company - ' + str(amount[i].description)
         ele['amount'] = amount[i].amount
         tot_cre = tot_cre + float(amount[i].amount)
         tot_it = round(float(tot_it) - float(amount[i].amount),5)

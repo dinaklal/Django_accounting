@@ -60,6 +60,7 @@ def process(request):
     company = request.POST['company']
     site = request.POST['site']
     service = request.POST['service']
+    inv_date = post_data['inv_date'][0]
     from_date = post_data['from_date'][0]
     to_date = post_data['to_date'][0]
     discount = post_data['discount'][0]
@@ -84,7 +85,7 @@ def process(request):
         messages.error(request,'duplicate')
         return render(request,'invoice_added.html')
     else:
-        ob = Invoice(company_id = company,amount = 0, discount = discount,date =today)
+        ob = Invoice(company_id = company,amount = 0, discount = discount,date =inv_date)
         ob.save()
         tot_price = 0.0
         inv_print = []
@@ -210,18 +211,28 @@ def get_invoice(request):
     #print(today)
     return render(request,'view_inv.html',{'invoice':invoice,'date':today})
 def edit_inv_date(request):   
-    post_data = dict(request.POST.lists())
-    post_data.pop('csrfmiddlewaretoken',None)
-    from_date = post_data['from_date'][0]
-    to_date = post_data['to_date'][0]
+    if request.method != 'POST':
+        del_t = request.GET['del_note_id']
+        invoice = DelNote.objects.filter(del_note_id__contains=del_t)
+        for i in invoice:
+            i.company = Company.objects.get(id = i.company_id).name
+            i.site = Sites.objects.get(id = i.site_id).name
+            i.inv_id = "Nill" if i.inv_id == 0 else "#"+str(i.inv_id)
+            i.service = "Sweet Water supply" if i.service == 's1' else "Sewage Water removal"
+        return render(request,'view_inv_date.html',{'invoice':invoice})
+    else:
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        from_date = post_data['from_date'][0]
+        to_date = post_data['to_date'][0]
 
-    invoice = DelNote.objects.filter(date__range=(from_date, to_date))
-    for i in invoice:
-        i.company = Company.objects.get(id = i.company_id).name
-        i.site = Sites.objects.get(id = i.site_id).name
-        i.inv_id = "Nill" if i.inv_id == 0 else "#"+str(i.inv_id)
-        i.service = "Sweet Water supply" if i.service == 's1' else "Sewage Water removal"
-    return render(request,'view_inv_date.html',{'invoice':invoice,'date':to_date,'from_date':from_date})
+        invoice = DelNote.objects.filter(date__range=(from_date, to_date))
+        for i in invoice:
+            i.company = Company.objects.get(id = i.company_id).name
+            i.site = Sites.objects.get(id = i.site_id).name
+            i.inv_id = "Nill" if i.inv_id == 0 else "#"+str(i.inv_id)
+            i.service = "Sweet Water supply" if i.service == 's1' else "Sewage Water removal"
+        return render(request,'view_inv_date.html',{'invoice':invoice,'date':to_date,'from_date':from_date})
 def edit_inv(request):
     inv_id = request.POST['inv_id']
     invoice = Invoice.objects.filter(id= inv_id)

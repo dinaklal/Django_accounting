@@ -13,6 +13,8 @@
 #td_inner td
 {
 	text-align:center;
+  padding-top: 2px;
+  padding-bottom: -1px;
 }
 body{
 
@@ -61,32 +63,34 @@ body{
         <br>
 </b>
 </div>
+
+
            <br>
             <div class='table-responsive'  >
             <table class='table table-responsive table-bordered' border="1" style='background-color:#f2f2f2;padding-top:10px;'>
               <thead >
                 <tr>
                  <th> SINO</th>
-                  <th>Delivery NoteID</th>
+                  <th>Del.NoteID</th>
                   <th>Date </th>
                   <th>Site Name</th>
                   <th>Vehicle No:</th>
                    <th>Service</th>
                   <th>Units</th>
-                  <th>Unit Price </th>
+                 
                    <th>Total Price </th>
               
 <tbody id = "td_inner">
                   {% for del_note in del_notes%}
                   <tr>
-                  <td	style="width:10%;">{{ forloop.counter  }} </td>
+                  <td	style="width:5%;">{{ forloop.counter  }} </td>
                   <td>{{del_note.del_id}}</td>
                   <td>{{ del_note.date}}</td>
                    <td>{{ del_note.site_name }}</td>
                    <td>{{ del_note.veh_no }}</td>
                   <td>{{ del_note.service }}</td>
-                  <td>{{ del_note.units }}</td>
-                   <td>{{ del_note.u_price }}</td>
+                  <td style="text-align:left">&nbsp{{ del_note.units }}</td>
+               
                    <td>{{ del_note.total_price }}</td>
 
                     
@@ -101,10 +105,11 @@ body{
                   <td></td>
                   <td></td>
                    <td></td>
-                   <td></td>
-                  <td><b>Total Units</td>
+                  <td></td>
+                 
+                  <td><b>Total </td>
 				  {% if  company.tot_units == 0 %} 
-				  <td><b>{{ company.tot_trips }} Trips</td>
+				  <td style="text-align:left"><b>{{ company.tot_trips }} Trips</td>
 
 				  {% elif  company.tot_trips  == 0 %} 
 				  
@@ -113,7 +118,7 @@ body{
 				  <td><b>{{ company.tot_units}} gal & {{ company.tot_trips }} Trips</td>
 				  {% endif %}
                   
-                   <td><b>Total</td>
+                 
                    <td><b>{{ company.tot_price}} QR</td>
 
                     

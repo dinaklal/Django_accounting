@@ -233,7 +233,21 @@ display:block;
                 <hr>
         
                 
-               
+               <div class="row" >
+          <form  role="form" action="edit_inv_date" method="GET">
+   			 {% csrf_token %}
+            <div class="col-md-5 col-md-offset-2" >
+            <div class="form-group">
+            <span class="label label-primary">Enter Delivery Note ID</span>
+            <input type="text" class="form-control pull-left" placeholder="Enter Search Query (eg-: 55 for n55d )" name="del_note_id" required>
+              </div>
+              </div>
+          <div class="col-md-2" >
+        <button class="btn btn-lg btn-success btn-block pull-right" type="submit">View</button>
+        </div>
+      </form>
+        
+        </div>
          <hr>
          <div class="row" >
          <form  role="form" action="edit_inv_date" method="post">

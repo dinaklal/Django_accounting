@@ -13,6 +13,8 @@
 #td_inner td
 {
 	text-align:center;
+  padding-top:3 px;
+  padding-bottom : 0px;
 }
 body{
 
@@ -71,7 +73,7 @@ body{
                   <tr>
                   <td  style = "width:20%;" >{{ forloop.counter }}</td>
                   <td>{{ inv.date }}</td>
-                  <td>{{ inv.Description }}</td>
+                  <td style="text-align:left">&nbsp{{ inv.Description }}</td>
                   {% if  inv.type == 'Debit'%}              
                   
                   <td style="text-align:right">{{ inv.amount }}&nbsp</td><td></td>
@@ -84,16 +86,16 @@ body{
                   {% endfor %}
 
                   <tr> 
-                  <td style = "width:20%;" ></td>
+                  <td style = "width:18%;" ></td>
                   <td></td>
                  
-                  <td><b>Total</b></td>
+                  <td  ><b>Total</b></td>
                   <td style="text-align:right">{{ tot.tot_deb}}&nbsp </td>
                   <td style="text-align:right">{{ tot.tot_cred}}&nbsp </td>
                   </tr>
                   <tr> 
                   <td style = "width:10%;" ></td>
-                  <td style = "width:25%;"></td>
+                  <td style = "width:18%;"></td>
                  
                   <td ><b>Balance</b></td>
                   <td> </td>
