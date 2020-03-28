@@ -9,6 +9,7 @@ from home.utils import render_to_pdf #created in step 4
 from django.views.generic import View
 from django.http import HttpResponse
 from num2words import num2words
+import ast
 # Create your views here.
 from django.db.models import Max
 
@@ -59,6 +60,12 @@ def process(request):
     post_data.pop('csrfmiddlewaretoken',None)
     company = request.POST['company']
     site = request.POST['site']
+    if 'all' in site:
+        site='all'
+    else:
+        site = ast.literal_eval(site)
+    print(site)
+    print(site)
     service = request.POST['service']
     inv_date = post_data['inv_date'][0]
     from_date = post_data['from_date'][0]
@@ -73,12 +80,12 @@ def process(request):
 
     elif service =='all' and site != 'all':
 
-        del_notes = DelNote.objects.filter(company_id=company,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,site_id__in = site,invoiced = False,date__range=(from_date, to_date))
 
     elif site == 'all' and service != 'all':
         del_notes = DelNote.objects.filter(company_id=company,service = service,invoiced = False,date__range=(from_date, to_date))
     else :
-        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id__in = site,invoiced = False,date__range=(from_date, to_date))
     
     if len(del_notes) == 0 :
         print(len(del_notes))
@@ -142,11 +149,14 @@ def process(request):
         company_data.inv = ob.id
         company_data.date = ob.date
         #print(inv_print)
+       
+        company_data.words = num2words(round( company_data.total1 ,3 )).title() + " Only "
         return render(request,'invoice_added.html',{'invoice':inv_print,'company':company_data})
 
 def GeneratePdf(request):
         get_data = dict(request.GET.lists())
         id=get_data['inv_id'][0]
+        words=get_data['words'][0]
         invoice = Invoice.objects.get(id=id)
         sales =   Invoice_Details.objects.filter(inv_id=id)
         inv_print = []
@@ -195,7 +205,7 @@ def GeneratePdf(request):
         company_data  = Company.objects.get(id=invoice.company_id)
         invoice.total1 = round(float(invoice.amount) - float(invoice.discount),3 )
        
-        invoice.words = num2words(invoice.total1).title()
+        invoice.words = words
         #print(inv_print)
         invoice.discount = round(float(invoice.discount),3)
         pdf = render_to_pdf('invoice.html',{ 'invoice':invoice,'sales':inv_print,'invoice1':company_data})
@@ -299,6 +309,7 @@ def edit_inv(request):
             
         today=datetime.today()
         today = today.strftime("%Y-%m-%d")
+        company.words = num2words(round( company.tot_price - float(invoice.discount) ,3 )).title() + " Only "
         return render(request,'edit_inv.html',{'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes,'discount':invoice.discount})
     else:
         messages.error(request,'duplicate')

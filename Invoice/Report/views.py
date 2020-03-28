@@ -219,7 +219,7 @@ def print_account(request):
             ele ={}
             ele['type'] = 'Credit'
             ele['Description'] = 'From Company - ' + str(amount[i].description)
-            ele['amount'] = amount[i].amount
+            ele['amount'] = round(float(amount[i].amount),4)
             tot_it = round(float(tot_it) - float(amount[i].amount),5)
             tot_cre = tot_cre + float(amount[i].amount)
             ele['total_amount'] = tot_it 
@@ -230,7 +230,7 @@ def print_account(request):
             ele ={}
             ele['type'] = 'Debit'
             ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
-            ele['amount'] = invoice[j].amount
+            ele['amount'] = round(float(invoice[j].amount),4)
             tot_deb = tot_deb + float(invoice[j].amount)
             tot_it = round(float(tot_it) + float(invoice[j].amount)  - float(invoice[j].discount),5)
             ele['total_amount'] = tot_it 
@@ -241,7 +241,7 @@ def print_account(request):
         ele ={}
         ele['type'] = 'Credit'
         ele['Description'] = 'From Company - ' + str(amount[i].description)
-        ele['amount'] = amount[i].amount
+        ele['amount'] = round(float(amount[i].amount),4)
         tot_cre = tot_cre + float(amount[i].amount)
         tot_it = round(float(tot_it) - float(amount[i].amount),5)
         ele['total_amount'] = tot_it 
@@ -252,7 +252,7 @@ def print_account(request):
         ele ={}
         ele['type'] = 'Debit'
         ele['Description'] = 'Invoiced - #'+str(invoice[j].id)
-        ele['amount'] = invoice[j].amount
+        ele['amount'] = round(float(invoice[j].amount),4)
         tot_deb = tot_deb + float(invoice[j].amount)
         tot_it = round (float(tot_it) + float(invoice[j].amount) - float(invoice[j].discount),5)
         ele['total_amount'] = tot_it 
@@ -265,9 +265,9 @@ def print_account(request):
     for i in range(1,len(c)):
         if c[i]['date'] < datetime.strptime(date, '%Y-%m-%d').date() :            
             if c[i]['type'] == 'Debit':
-                f[0]['amount'] = float(f[0]['amount']) + float(c[i]['amount'])
+                f[0]['amount'] = round(float(f[0]['amount']) + float(c[i]['amount']),5)
             else:
-                f[0]['amount'] = float(f[0]['amount']) - float(c[i]['amount'])
+                f[0]['amount'] = round(float(f[0]['amount']) - float(c[i]['amount']),5)
             tot_deb = float(f[0]['amount'])
         else:
             f.append(c[i])

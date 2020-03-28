@@ -14,5 +14,7 @@ urlpatterns = [
     path('add_de_note2',views.add_de_note2,name='add_de_note2'),
     path('edit_del3',views.edit_del3,name='edit_del3'),
     path('print_tripsheet_inv',views.print_tripsheet_inv,name='print_tripsheet_inv'),
+    path('view_money',views.view_money,name='view_money'),
+    path('view_money_2',views.view_money_2,name='view_money_2'),
    
     ]

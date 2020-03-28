@@ -2,8 +2,10 @@ from django.shortcuts import render,redirect
 from company.models import Company,Rate,DelNote
 from login.models import Sites
 from home.models import Invoice_Details,Invoice
+from Report.models import Account
 from home.utils import render_to_pdf 
 from django.http import HttpResponse
+import ast
 #from home.models import 
 from django.contrib import messages
 from datetime import datetime
@@ -93,7 +95,13 @@ def trip_sheet(request):
     post_data = dict(request.POST.lists())
     post_data.pop('csrfmiddlewaretoken',None)
     company = request.POST['company']
-    site = request.POST['site']
+    site = request.POST.getlist('site')
+    if 'all' in site:
+        site='all'
+    else :
+        site = [int(x) for x in site]
+   # site = [int(x) for x in site]
+    print (site)
     service = request.POST['service']
     from_date = request.POST['from_date']
     to_date = request.POST['to_date']
@@ -103,12 +111,12 @@ def trip_sheet(request):
 
     elif service =='all' and site != 'all':
 
-        del_notes = DelNote.objects.filter(company_id=company,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,site_id__in= site,invoiced = False,date__range=(from_date, to_date))
 
     elif site == 'all' and service != 'all':
         del_notes = DelNote.objects.filter(company_id=company,service = service,invoiced = False,date__range=(from_date, to_date))
     else :
-        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id__in= site,invoiced = False,date__range=(from_date, to_date))
     
     company = Company.objects.get(id=company)
     company.from_date =  from_date
@@ -176,7 +184,12 @@ def trip_sheet(request):
 def print_tripsheet(request):
     get_data = dict(request.GET.lists())
     company=get_data['company'][0]
-    site=get_data['site'][0]
+    site=request.GET['site']
+    if 'all' in site:
+        site='all'
+    else:
+        site = ast.literal_eval(site)
+    print(site)
     service=get_data['service'][0]
     from_date=get_data['from_date'][0]
     to_date=get_data['to_date'][0]
@@ -187,12 +200,12 @@ def print_tripsheet(request):
 
     elif service =='all' and site != 'all':
 
-        del_notes = DelNote.objects.filter(company_id=company,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,site_id__in = site,invoiced = False,date__range=(from_date, to_date))
 
     elif site == 'all' and service != 'all':
         del_notes = DelNote.objects.filter(company_id=company,service = service,invoiced = False,date__range=(from_date, to_date))
     else :
-        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id = site,invoiced = False,date__range=(from_date, to_date))
+        del_notes = DelNote.objects.filter(company_id=company,service = service,site_id__in = site,invoiced = False,date__range=(from_date, to_date))
     
     company = Company.objects.get(id=company)
     company.from_date =  from_date
@@ -219,7 +232,7 @@ def print_tripsheet(request):
             element['u_price'] = rate.service2
             element['trip'] = 1
             element['service'] = "Sweet Water "
-            element['total_price'] = float(del_note.units) * float(rate.service2)
+            element['total_price'] = round(float(del_note.units) * float(rate.service2),3)
             element['units'] = del_note.units + ' Trip'
             tot_trips += 1
             
@@ -228,7 +241,7 @@ def print_tripsheet(request):
             element['u_price'] = rate.service1
             element['trip'] = 0
             element['service'] = "Sweet Water "
-            element['total_price'] = float(del_note.units) * float(rate.service1)
+            element['total_price'] = round(float(del_note.units) * float(rate.service1),3)
             tot_price =  element['total_price'] + tot_price
             element['units'] = del_note.units + ' Gallon'
             tot_units = tot_units +  int(del_note.units)
@@ -237,7 +250,7 @@ def print_tripsheet(request):
             element['u_price'] = rate.service3
             element['trip'] = 1
             tot_trips += 1
-            element['total_price'] = float(del_note.units) * float(rate.service3)
+            element['total_price'] = round(float(del_note.units) * float(rate.service3),3)
             tot_price =  element['total_price'] + tot_price
             element['service'] = "Sewage Water"
             element['units'] = del_note.units + ' Trip'
@@ -560,3 +573,50 @@ def print_tripsheet_inv (request):
      
     pdf = render_to_pdf('trip.html',{ 'company':company,'sites':sites,'rate':rates,'today':today,'del_notes':notes})
     return HttpResponse(pdf, content_type='application/pdf') 
+
+def view_money(request):
+    if request.method != 'POST':
+        company = Company.objects.all()
+        account = Account.objects.all()
+        for acc in account:
+            acc.company = [x.name for x in company if x.id == acc.from_company ][0]
+            print(acc.company)
+        return render(request,'view_money.html',{'company':company,'account':account})
+    else:
+        comp_id = request.POST['company']
+        account = Account.objects.filter(from_company=comp_id)
+        company = Company.objects.filter()
+        for acc in account:
+            acc.company = [x.name for x in company if x.id == acc.from_company ][0]
+            
+        
+        return render(request,'view_money.html',{'company':company,'account':account})
+def view_money_2(request):
+    if request.method == 'GET':
+        acc_id = request.GET['account_id']
+        company = Company.objects.all()
+        account = Account.objects.get(id=acc_id)
+        account.date = account.date.strftime("%Y-%m-%d")
+        return render(request,'add_money_2.html',{'company':company,'account':account})
+    elif request.method == 'POST':
+        company = Company.objects.all()
+        account = Account.objects.all()
+        for acc in account:
+            acc.company = [x.name for x in company if x.id == acc.from_company ][0]
+            print(acc.company)
+        post_data = dict(request.POST.lists())
+        post_data.pop('csrfmiddlewaretoken',None)
+        acc_id = post_data['acc_id'][0]
+        date = post_data['date'][0]
+        com_id = post_data['company'][0]
+        amount  = post_data['amount'][0]
+        desc  = post_data['desc'][0]
+        ob = Account.objects.get(id=acc_id)
+        ob.from_company = com_id
+        ob.amount = amount
+        ob.date =date
+        ob.description=desc
+        ob.save()
+        messages.info(request,'done')
+        return render(request,'view_money.html',{'company':company,'account':account})  
+
