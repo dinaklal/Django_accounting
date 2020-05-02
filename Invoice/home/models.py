@@ -12,4 +12,6 @@ class Invoice_Details(models.Model):
     inv_id= models.IntegerField()
     del_note_id= models.IntegerField()
     rate_id = models.IntegerField()
+    rate = models.CharField(max_length=50)
+    service = models.CharField(max_length=50)
     

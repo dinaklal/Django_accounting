@@ -530,30 +530,29 @@ def print_tripsheet_inv (request):
         element['site_id'] = del_note.site_id
         site = Sites.objects.get(id=del_note.site_id)
         element['site_name'] = site.name            
-        rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)
         if del_note.units == '1' and del_note.service == 's1':
-                element['u_price'] = rate.service2
+                element['u_price'] = inv_det.rate
                 element['trip'] = 1
                 element['service'] = "Sweet Water "
-                element['total_price'] = round(float(del_note.units) * float(rate.service2),3)
+                element['total_price'] = round(float(del_note.units) * float(inv_det.rate),3)
                 element['units'] = del_note.units + ' Trip'
                 tot_trips += 1
                 
                 tot_price =  element['total_price'] + tot_price
         elif del_note.service == 's1':
-                element['u_price'] = rate.service1
+                element['u_price'] = inv_det.rate
                 element['trip'] = 0
                 element['service'] = "Sweet Water "
-                element['total_price'] = round(float(del_note.units) * float(rate.service1),3)
+                element['total_price'] = round(float(del_note.units) * float(inv_det.rate),3)
                 tot_price =  element['total_price'] + tot_price
                 element['units'] = del_note.units + ' Gallon'
                 tot_units = tot_units +  int(del_note.units)
 
         else:
-                element['u_price'] = rate.service3
+                element['u_price'] = inv_det.rate
                 element['trip'] = 1
                 tot_trips += 1
-                element['total_price'] = round(float(del_note.units) * float(rate.service3),3)
+                element['total_price'] = round(float(del_note.units) * float(inv_det.rate),3)
                 tot_price =  element['total_price'] + tot_price
                 element['service'] = "Sewage Water"
                 element['units'] = del_note.units + ' Trip'

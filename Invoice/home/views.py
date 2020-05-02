@@ -100,11 +100,8 @@ def process(request):
         for del_note in del_notes:   
             
             rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)        
-            ob1 = Invoice_Details(inv_id =ob.id ,del_note_id  = del_note.id, rate_id = rate.id )
-            ob1.save()
             site_ob = Sites.objects.get(id = del_note.site_id)
 
-            
             inv['site_id'] = site_ob.id
             inv['site'] = site_ob.name
             
@@ -115,18 +112,24 @@ def process(request):
                 inv['unit_price'] = rate.service2
                 inv['units'] = 1
                 inv['service'] = 'Sweet Water (in Trips)'
+                ob1 = Invoice_Details(inv_id =ob.id ,del_note_id  = del_note.id, rate_id = rate.id,rate=rate.service2 ,service = "s2")
+            
             elif del_note.service == 's1':            
                 tot = float(del_note.units) * float(rate.service1)
                 inv['sum'] = float(del_note.units) * float(rate.service1)
                 inv['unit_price'] = rate.service1
                 inv['units'] = int(del_note.units)
                 inv['service'] = 'Sweet Water (in Gallon)'
+                ob1 = Invoice_Details(inv_id =ob.id ,del_note_id  = del_note.id, rate_id = rate.id,rate=rate.service1 ,service = "s1")
+            
             else:
                 tot = float(del_note.units) * float(rate.service3)
                 inv['sum'] = float(del_note.units) * float(rate.service3)
                 inv['unit_price'] = rate.service3                
                 inv['units'] = 1
                 inv['service'] = 'Sewage Water Removal (in Trips)'
+                ob1 = Invoice_Details(inv_id =ob.id ,del_note_id  = del_note.id, rate_id = rate.id,rate=rate.service3 ,service = "s3")
+            ob1.save()#invoice details object getting saved here
             tot_price =  tot + tot_price
             del_note.invoiced = True
             del_note.inv_id = ob.id
@@ -166,27 +169,26 @@ def GeneratePdf(request):
         inv = {}   
         for sale in sales:
             del_note = DelNote.objects.get(id = sale.del_note_id)
-            rate = Rate.objects.get(id = sale.rate_id)
             site_ob = Sites.objects.get(id = del_note.site_id)            
             inv['site_id'] = site_ob.id
             inv['site'] = site_ob.name      
 
             if del_note.units == '1' and del_note.service == 's1':
-                tot = float(del_note.units) * float(rate.service2)
-                inv['sum'] = float(del_note.units) * float(rate.service2)
-                inv['unit_price'] = rate.service2
+                tot = float(del_note.units) * float(sale.rate)
+                inv['sum'] = float(del_note.units) * float(sale.rate)
+                inv['unit_price'] = sale.rate
                 inv['units'] = 1
                 inv['service'] = 'Sweet Water'
             elif del_note.service == 's1':            
-                tot = float(del_note.units) * float(rate.service1)
-                inv['sum'] = float(del_note.units) * float(rate.service1)
-                inv['unit_price'] = rate.service1
+                tot = float(del_note.units) * float(sale.rate)
+                inv['sum'] = float(del_note.units) * float(sale.rate)
+                inv['unit_price'] = sale.rate
                 inv['units'] = int(del_note.units)
                 inv['service'] = 'Sweet_Water'
             else:
-                tot = float(del_note.units) * float(rate.service3)
-                inv['sum'] = float(del_note.units) * float(rate.service3)
-                inv['unit_price'] = rate.service3                
+                tot = float(del_note.units) * float(sale.rate)
+                inv['sum'] = float(del_note.units) * float(sale.rate)
+                inv['unit_price'] =sale.rate             
                 inv['units'] = 1
                 inv['service'] = 'Sewage Water Removal '
             tot_price =  tot + tot_price
@@ -265,31 +267,30 @@ def edit_inv(request):
             element['site_id'] = del_note.site_id
             site = Sites.objects.get(id=del_note.site_id)
             element['site_name'] = site.name
-                
-            rate = Rate.objects.get(company_id = del_note.company_id, site_id = del_note.site_id)
+            #rates will  be there in inv_detail objects
             if del_note.units == '1' and del_note.service == 's1':
-                element['u_price'] = rate.service2
+                element['u_price'] = inv_det.rate
                 element['trip'] = 1
                 element['service'] = "Sweet Water "
-                element['total_price'] = float(del_note.units) * float(rate.service2)
+                element['total_price'] = float(del_note.units) * float(inv_det.rate)
                 element['units'] = del_note.units + ' Trip'
                 tot_trips += 1
                     
                 tot_price =  element['total_price'] + tot_price
             elif del_note.service == 's1':
-                element['u_price'] = rate.service1
+                element['u_price'] = inv_det.rate
                 element['trip'] = 0
                 element['service'] = "Sweet Water "
-                element['total_price'] = float(del_note.units) * float(rate.service1)
+                element['total_price'] = float(del_note.units) * float(inv_det.rate)
                 tot_price =  element['total_price'] + tot_price
                 element['units'] = del_note.units + ' Gallon'
                 tot_units = tot_units +  int(del_note.units)
 
             else:
-                element['u_price'] = rate.service3
+                element['u_price'] =inv_det.rate
                 element['trip'] = 1
                 tot_trips += 1
-                element['total_price'] = float(del_note.units) * float(rate.service3)
+                element['total_price'] = float(del_note.units) * float(inv_det.rate)
         
                 tot_price =  element['total_price'] + tot_price
                 element['service'] = "Sewage Water Removal"
